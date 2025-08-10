@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo検索 - Todo管理システム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Todo管理システム</h1>
+        <ul>
+            <li><a th:href="@{/todos}">一覧</a></li>
+            <li><a th:href="@{/todos/new}">新規作成</a></li>
+            <li><a th:href="@{/todos/search}" class="active">検索</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <div th:if="${warningMessage}" class="alert alert-warning" th:text="${warningMessage}"></div>
+        <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+        <h1>Todo検索</h1>
+
+        <!-- 検索フォーム -->
+        <div class="card">
+            <div class="card-header">
+                <h5>検索条件</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/todos/search}" method="get">
+                    <div class="row" style="display: flex; margin-bottom: 15px;">
+                        <div class="col" style="flex: 2; margin-right: 15px;">
+                            <label for="keyword" class="form-label">キーワード</label>
+                            <input type="text" id="keyword" name="keyword" th:value="${keyword}"
+                                   class="form-control" placeholder="タイトルまたは説明に含まれる文字列">
+                        </div>
+                        <div class="col" style="flex: 1; margin-right: 15px;">
+                            <label for="status" class="form-label">ステータス</label>
+                            <select id="status" name="status" class="form-control">
+                                <option value="">すべて</option>
+                                <option th:each="status : ${statuses}" 
+                                        th:value="${status}" 
+                                        th:text="${status.displayName}"
+                                        th:selected="${status.name() == selectedStatus}">未完了</option>
+                            </select>
+                        </div>
+                        <div class="col" style="flex: 1;">
+                            <label for="priority" class="form-label">優先度</label>
+                            <select id="priority" name="priority" class="form-control">
+                                <option value="">すべて</option>
+                                <option th:each="priority : ${priorities}" 
+                                        th:value="${priority}" 
+                                        th:text="${priority.displayName}"
+                                        th:selected="${priority.name() == selectedPriority}">中</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary">検索</button>
+                        <a th:href="@{/todos/search}" class="btn btn-secondary">リセット</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 検索結果 -->
+        <div th:if="${searchResults != null}">
+            <div style="margin: 20px 0;">
+                <h3>検索結果</h3>
+                <p style="color: #6c757d;">
+                    <span th:text="${resultCount}">0</span>件のTodoが見つかりました
+                    <span th:if="${keyword != null and !keyword.isEmpty()}">(キーワード: <strong th:text="${keyword}">keyword</strong>)</span>
+                </p>
+            </div>
+
+            <!-- 結果一覧 -->
+            <div th:if="${resultCount > 0}">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>タイトル</th>
+                            <th>ステータス</th>
+                            <th>優先度</th>
+                            <th>期限</th>
+                            <th>作成日</th>
+                            <th>アクション</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="todo : ${searchResults}">
+                            <td th:text="${todo.id}">1</td>
+                            <td>
+                                <a th:href="@{/todos/{id}(id=${todo.id})}" th:text="${todo.title}">Sample Todo</a>
+                                <!-- キーワードがマッチした説明の一部を表示 -->
+                                <div th:if="${todo.description != null and !todo.description.isEmpty()}" 
+                                     style="font-size: 0.9em; color: #6c757d; margin-top: 5px;">
+                                    <span th:text="${#strings.length(todo.description) > 100 ? 
+                                                   #strings.substring(todo.description, 0, 100) + '...' : 
+                                                   todo.description}">Description preview</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span th:text="${todo.status.displayName}" 
+                                      th:class="|badge ${todo.status.name() == 'TODO'} ? 'badge-danger' : 
+                                               (${todo.status.name() == 'IN_PROGRESS'} ? 'badge-warning' : 'badge-success')|">
+                                    未完了
+                                </span>
+                            </td>
+                            <td>
+                                <span th:text="${todo.priority.displayName}" 
+                                      th:class="|badge ${todo.priority.name() == 'HIGH'} ? 'badge-danger' : 
+                                               (${todo.priority.name() == 'MEDIUM'} ? 'badge-warning' : 'badge-secondary')|">
+                                    中
+                                </span>
+                            </td>
+                            <td th:text="${todo.dueDate != null} ? ${#temporals.format(todo.dueDate, 'yyyy-MM-dd')} : '-'"
+                                th:style="${todo.dueDate != null and #temporals.format(#temporals.createNow(), 'yyyy-MM-dd') > #temporals.format(todo.dueDate, 'yyyy-MM-dd')} ? 'color: #dc3545; font-weight: bold;' : ''">
+                                2024-01-01
+                            </td>
+                            <td th:text="${#temporals.format(todo.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</td>
+                            <td>
+                                <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">詳細</a>
+                                <a th:href="@{/todos/{id}/edit(id=${todo.id})}" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.25rem 0.5rem;">編集</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 結果なし -->
+            <div th:if="${resultCount == 0}" class="card" style="margin-top: 20px;">
+                <div class="card-body" style="text-align: center; padding: 2rem;">
+                    <h4 style="color: #6c757d;">検索条件に一致するTodoが見つかりませんでした</h4>
+                    <p style="color: #6c757d;">検索条件を変更して再度お試しください。</p>
+                    <div style="margin-top: 20px;">
+                        <a th:href="@{/todos/search}" class="btn btn-secondary">検索条件をリセット</a>
+                        <a th:href="@{/todos/new}" class="btn btn-primary">新しいTodoを作成</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 検索前の状態 -->
+        <div th:unless="${searchResults != null}" class="card" style="margin-top: 20px;">
+            <div class="card-body" style="text-align: center; padding: 2rem;">
+                <h4 style="color: #6c757d;">検索条件を入力してTodoを検索できます</h4>
+                <p style="color: #6c757d;">キーワード、ステータス、優先度の組み合わせで検索できます。</p>
+            </div>
+        </div>
+
+        <!-- ナビゲーション -->
+        <div style="margin-top: 30px;">
+            <a th:href="@{/todos}" class="btn btn-secondary">一覧に戻る</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Todo管理システム. All rights reserved.</p>
+    </footer>
+
+    <style>
+        .badge {
+            padding: 0.25em 0.6em;
+            font-size: 75%;
+            font-weight: bold;
+            border-radius: 0.25rem;
+            color: white;
+        }
+        .badge-danger { background-color: #dc3545; }
+        .badge-warning { background-color: #ffc107; color: #212529; }
+        .badge-success { background-color: #28a745; }
+        .badge-secondary { background-color: #6c757d; }
+        
+        .row {
+            display: flex;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .card-header h5 {
+            margin: 0;
+            color: #495057;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|${todo.title}を編集 - Todo管理システム|">Todo編集 - Todo管理システム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Todo管理システム</h1>
+        <ul>
+            <li><a th:href="@{/todos}">一覧</a></li>
+            <li><a th:href="@{/todos/new}">新規作成</a></li>
+            <li><a th:href="@{/todos/search}">検索</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <div th:if="${warningMessage}" class="alert alert-warning" th:text="${warningMessage}"></div>
+        <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+        <!-- パンくずリスト -->
+        <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li><a th:href="@{/todos}" style="color: #007bff; text-decoration: none;">Todo一覧</a></li>
+                <li style="margin: 0 10px; color: #6c757d;">&gt;</li>
+                <li><a th:href="@{/todos/{id}(id=${todo.id})}" style="color: #007bff; text-decoration: none;" th:text="${todo.title}">Todo詳細</a></li>
+                <li style="margin: 0 10px; color: #6c757d;">&gt;</li>
+                <li style="color: #6c757d;">編集</li>
+            </ol>
+        </nav>
+
+        <h1 th:text="|${todo.title}を編集|">Todo編集</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <form th:action="@{/todos/{id}(id=${todo.id})}" th:object="${todoRequest}" method="post">
+                    <div class="form-group">
+                        <label for="title" class="form-label">タイトル <span style="color: red;">*</span></label>
+                        <input type="text" id="title" th:field="*{title}" 
+                               class="form-control" th:class="${#fields.hasErrors('title')} ? 'form-control is-invalid' : 'form-control'"
+                               placeholder="Todoのタイトルを入力してください" maxlength="100">
+                        <div th:if="${#fields.hasErrors('title')}" class="invalid-feedback">
+                            <div th:each="error : ${#fields.errors('title')}" th:text="${error}">Title error</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description" class="form-label">説明</label>
+                        <textarea id="description" th:field="*{description}" 
+                                  class="form-control" th:class="${#fields.hasErrors('description')} ? 'form-control is-invalid' : 'form-control'"
+                                  rows="4" placeholder="Todoの詳細説明を入力してください（任意）" maxlength="500"></textarea>
+                        <div th:if="${#fields.hasErrors('description')}" class="invalid-feedback">
+                            <div th:each="error : ${#fields.errors('description')}" th:text="${error}">Description error</div>
+                        </div>
+                        <small class="form-text text-muted">500文字以内で入力してください。</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status" class="form-label">ステータス</label>
+                        <select id="status" th:field="*{status}" class="form-control">
+                            <option th:each="status : ${statuses}" 
+                                    th:value="${status}" 
+                                    th:text="${status.displayName}"
+                                    th:selected="${status == todoRequest.status}">未完了</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority" class="form-label">優先度</label>
+                        <select id="priority" th:field="*{priority}" class="form-control">
+                            <option th:each="priority : ${priorities}" 
+                                    th:value="${priority}" 
+                                    th:text="${priority.displayName}"
+                                    th:selected="${priority == todoRequest.priority}">中</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dueDate" class="form-label">期限</label>
+                        <input type="date" id="dueDate" th:field="*{dueDate}" class="form-control">
+                        <small class="form-text text-muted">期限を設定する場合は日付を選択してください。</small>
+                    </div>
+
+                    <!-- メタ情報表示 -->
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <h6 style="margin-bottom: 10px; color: #495057;">Todo情報</h6>
+                        <div class="row" style="display: flex;">
+                            <div class="col" style="flex: 1; margin-right: 20px;">
+                                <small style="color: #6c757d;">ID: </small>
+                                <small th:text="${todo.id}">1</small>
+                            </div>
+                            <div class="col" style="flex: 1; margin-right: 20px;">
+                                <small style="color: #6c757d;">作成日: </small>
+                                <small th:text="${#temporals.format(todo.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</small>
+                            </div>
+                            <div class="col" style="flex: 1;">
+                                <small style="color: #6c757d;">更新日: </small>
+                                <small th:text="${#temporals.format(todo.updatedAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">更新</button>
+                        <a th:href="@{/todos/{id}(id=${todo.id})}" class="btn btn-secondary">キャンセル</a>
+                        <a th:href="@{/todos}" class="btn btn-secondary">一覧に戻る</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Todo管理システム. All rights reserved.</p>
+    </footer>
+
+    <style>
+        .form-text {
+            color: #6c757d;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        
+        .text-muted {
+            color: #6c757d !important;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .row {
+            display: flex;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        h6 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</body>
+</html>
