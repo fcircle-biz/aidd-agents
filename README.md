@@ -31,119 +31,14 @@ AI駆動開発（AI-Driven Development）を支援する専門エージェント
 
 このアプリケーションは、AIDAエージェントシステムの全工程（要件定義 → 設計 → タスク計画 → 実装）を通じて作成された実例です。
 
-- **機能**: CRUD操作、バリデーション、エラーハンドリング、REST API、Webインターフェース
-- **アーキテクチャ**: レイヤードアーキテクチャ（Controller → Service → Repository → Entity）
-- **技術スタック**: Spring Boot, Spring Data JPA, Thymeleaf, H2 Database, Maven
-- **監視**: Actuator、Prometheus、Grafanaダッシュボード
-- **開発プロセス**: AIDAエージェント6段階による完全自動化開発
+詳細については、[todo-app-springboot/README.md](todo-app-springboot/README.md) を参照してください。
 
 ## クイックスタート
 
-### 前提条件
-
-- Java 17以上
-- Maven 3.6以上
-- Docker & Docker Compose（本番デプロイ用）
-
 ### Todo管理アプリケーションの起動
 
-```bash
-# リポジトリをクローン
-git clone <repository-url>
-cd aidd-agents/todo-app-springboot
+Todo管理アプリケーションの詳細な起動手順、開発環境構築、テスト実行については、[todo-app-springboot/README.md](todo-app-springboot/README.md) を参照してください。
 
-# 開発モードで起動
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-
-# または通常モードで起動
-mvn spring-boot:run
-```
-
-### アクセス先
-
-起動後、以下のURLでアプリケーションにアクセスできます：
-
-- **Webアプリケーション**: http://localhost:8080/todos
-- **REST API**: http://localhost:8080/api/todos
-- **H2データベースコンソール**: http://localhost:8080/h2-console
-- **開発ツール** (devプロファイル): http://localhost:8080/dev/
-- **Actuator監視**: http://localhost:8080/dev/actuator
-
-## 本番環境デプロイメント
-
-### Dockerを使用したデプロイ
-
-```bash
-cd todo-app-springboot
-
-# 本番環境で起動
-docker-compose up -d
-
-# ログ確認
-docker-compose logs -f todo-app
-
-# ヘルスチェック
-curl http://localhost:8080/actuator/health/production
-```
-
-### 監視ダッシュボード
-
-- **Grafana**: http://localhost:3000 (admin/admin123)
-- **Prometheus**: http://localhost:9090
-
-## 開発ガイド
-
-### テスト実行
-
-```bash
-cd todo-app-springboot
-
-# 全テスト実行
-mvn test
-
-# 統合テストのみ
-mvn test -Dtest="*IntegrationTest"
-
-# エンドツーエンドテストのみ
-mvn test -Dtest="CompleteEndToEndIntegrationTest"
-```
-
-### AIDAエージェントの使用方法
-
-AIDAエージェントは、Claude Code環境でTaskツールを使用して呼び出します：
-
-```markdown
-# 要件定義書作成
-- エージェント: aidd-step01-requirements
-- 入力: 初期仕様、システム概要
-- 出力: docs/specs/{system-name}/requirements.md
-- 実例: docs/specs/todo-app-springboot/requirements.md
-
-# システム設計文書作成  
-- エージェント: aidd-step02-design
-- 入力: requirements.md
-- 出力: docs/specs/{system-name}/design.md
-- 実例: docs/specs/todo-app-springboot/design.md
-
-# 実装タスク計画作成
-- エージェント: aidd-step03-task-plan  
-- 入力: design.md
-- 出力: docs/specs/{system-name}/tasks.md
-- 実例: docs/specs/todo-app-springboot/tasks.md
-
-# コード実装
-- エージェント: aidd-step04-implementation
-- 入力: 仕様書、特定タスク
-- 出力: 実装コード
-
-# GitHub Issue作成
-- エージェント: aidd-step05-issue-management
-- 機能: バグ報告、機能要求の日本語Issue作成
-
-# PR管理
-- エージェント: aidd-step06-pr-workflow  
-- 機能: コミット、プッシュ、PR作成（日本語）
-```
 
 ### プロファイル別設定
 
@@ -179,39 +74,69 @@ aidd-agents/
 └── CLAUDE.md                     # Claude Code用ガイド
 ```
 
-## API仕様
+## .claude/agents ディレクトリの使用方法
 
-### Todo管理API
+`.claude/agents/` ディレクトリには、AIDAエージェントシステムの各段階に対応するエージェント定義ファイルを配置します。
 
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/api/todos` | Todo一覧取得 |
-| GET | `/api/todos/{id}` | Todo詳細取得 |
-| POST | `/api/todos` | Todo作成 |
-| PUT | `/api/todos/{id}` | Todo更新 |
-| DELETE | `/api/todos/{id}` | Todo削除 |
-| GET | `/api/todos/search` | Todo検索 |
+### エージェントファイル構造
 
-### ログ管理API
+```
+.claude/agents/
+├── aidd-step01-requirements.md  # 要件定義書作成エージェント
+├── aidd-step02-design.md         # システム設計文書作成エージェント
+├── aidd-step03-task-plan.md      # 実装タスク計画エージェント
+├── aidd-step04-implementation.md # コード実装エージェント
+├── aidd-step05-issue-management.md # GitHub Issue管理エージェント
+└── aidd-step06-pr-workflow.md    # PR作成・管理エージェント
+```
 
-| Method | Endpoint | 説明 |
-|--------|----------|------|
-| GET | `/admin/logging/levels` | ログレベル一覧 |
-| PUT | `/admin/logging/levels/{logger}` | ログレベル変更 |
-| POST | `/admin/logging/reset` | ログレベルリセット |
+### エージェントの使用方法
+
+各エージェントは、Claude Code環境でTaskツールを使用して呼び出すことができます：
+
+```bash
+# 要件定義書作成
+Task: aidd-step01-requirements
+Input: 初期仕様、システム概要
+Output: docs/specs/{system-name}/requirements.md
+
+# システム設計文書作成
+Task: aidd-step02-design  
+Input: requirements.mdファイルパス
+Output: docs/specs/{system-name}/design.md
+
+# 実装タスク計画作成
+Task: aidd-step03-task-plan
+Input: design.mdファイルパス
+Output: docs/specs/{system-name}/tasks.md
+
+# コード実装
+Task: aidd-step04-implementation
+Input: 仕様書ファイル、実装する特定のタスク
+Output: 実装されたコード
+
+# GitHub Issue作成（日本語）
+Task: aidd-step05-issue-management
+Input: バグ報告、機能要求
+Output: 適切にフォーマットされたGitHub Issue
+
+# PR作成・管理（日本語）
+Task: aidd-step06-pr-workflow
+Input: 完了した作業内容
+Output: コミット、プッシュ、プルリクエスト作成
+```
+
+### AIDD開発フロー
+
+1. **要件分析**: 初期仕様から正式な要件定義書を作成
+2. **システム設計**: 要件定義書から包括的な設計文書を作成
+3. **タスク計画**: 設計文書から詳細な実装タスクリストを生成
+4. **実装**: 仕様書に基づいて実際のコードを実装
+5. **Issue管理**: 開発過程で発生した問題をGitHub Issueとして管理
+6. **PR管理**: 完了した作業をプルリクエストとして統合
 
 ## 特徴
 
-### Todo管理アプリケーション
-
-- ✅ **包括的CRUD操作**: 作成、読取、更新、削除機能
-- ✅ **バリデーション**: カスタムバリデータと包括的な入力検証
-- ✅ **エラーハンドリング**: グローバル例外処理とユーザーフレンドリーなエラーメッセージ
-- ✅ **デュアルインターフェース**: REST APIとThymeleaf Webインターフェース
-- ✅ **セキュリティ**: CSRF保護、SQLインジェクション対策、XSS保護
-- ✅ **監視**: Actuator、Prometheus、Grafanaによる包括的監視
-- ✅ **テスト**: 単体・統合・エンドツーエンドテストの完全なスイート
-- ✅ **本番対応**: Docker、環境別設定、パフォーマンス最適化
 
 ### AIDAエージェントシステム
 
@@ -220,34 +145,6 @@ aidd-agents/
 - 🌐 **日本語対応**: GitHubワークフロー（Issue、PR）の日本語サポート
 - 🤖 **AI駆動**: Claude Codeとの統合による自動化された開発支援
 
-## トラブルシューティング
-
-### よくある問題
-
-1. **ポート競合**: 8080ポートが使用中の場合
-   ```bash
-   mvn spring-boot:run -Dserver.port=8081
-   ```
-
-2. **Java バージョン**: Java 17が必要
-   ```bash
-   java --version
-   mvn -version
-   ```
-
-3. **Docker メモリ**: 最低4GB RAM推奨
-   ```bash
-   docker stats
-   ```
-
-4. **ログ確認**: 
-   ```bash
-   # 開発環境
-   tail -f todo-app-springboot/logs/todo-app.log
-   
-   # Docker環境
-   docker-compose logs -f todo-app
-   ```
 
 ## 貢献
 
