@@ -29,21 +29,18 @@ public class TodoRequest {
     private String description;
     
     /**
-     * ステータス（必須）
+     * ステータス（任意、未指定時はTODOがデフォルト）
      */
-    @NotNull(message = "ステータスは必須項目です")
     private TodoStatus status;
     
     /**
-     * 優先度（必須）
+     * 優先度（任意、未指定時はMEDIUMがデフォルト）
      */
-    @NotNull(message = "優先度は必須項目です")
     private TodoPriority priority;
     
     /**
-     * 期限（任意、未来の日付のみ許可）
+     * 期限（任意）
      */
-    @Future(message = "期限は未来の日付を指定してください")
     private LocalDate dueDate;
     
     /**

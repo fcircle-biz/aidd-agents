@@ -115,48 +115,49 @@
 
 ## ビジネスロジック層
 
-- [ ] TASK-005: サービス層の実装
+- [x] TASK-005: サービス層の実装
   - ビジネスロジックとバリデーションの実装
   - トランザクション管理の設定
   - エラーハンドリングの統合
   - _要件: 要件1-6（各機能のビジネスロジック）_
+  - **実装ノート**: 完全なサービス層実装完了。TodoServiceインターフェースとTodoServiceImpl実装クラスを作成。@Service、@Transactional、@RequiredArgsConstructorアノテーション設定済み。全CRUD操作（create/read/update/delete）、検索機能、ページング対応を実装。自動タイムスタンプ設定（createdAt/updatedAt）、存在チェック、TodoNotFoundExceptionスロー処理、ビジネスロジック検証を含む。Spring Data JPAリポジトリとの完全統合、SLF4Jログ出力対応。アプリケーション起動テスト成功確認済み。要件1-6の全ビジネスロジックに完全対応。
 
-  - [ ] TASK-005.1: TodoServiceインターフェースの作成
+  - [x] TASK-005.1: TodoServiceインターフェースの作成
     - com.example.todoapp.service.TodoService.javaの作成
     - CRUDメソッドの定義
     - 検索メソッドの定義
     - _要件: 要件1-6_
 
-  - [ ] TASK-005.2: TodoServiceImplクラスの実装
+  - [x] TASK-005.2: TodoServiceImplクラスの実装
     - com.example.todoapp.service.impl.TodoServiceImpl.javaの作成
     - @Service, @Transactionalアノテーションの設定
     - TodoRepositoryの依存性注入
     - _要件: 要件1-6_
 
-  - [ ] TASK-005.3: Create機能のビジネスロジック実装
+  - [x] TASK-005.3: Create機能のビジネスロジック実装
     - createメソッドの実装
     - 作成日時の自動設定
     - バリデーション処理
     - _要件: 要件1（Todo作成機能）_
 
-  - [ ] TASK-005.4: Read機能のビジネスロジック実装
+  - [x] TASK-005.4: Read機能のビジネスロジック実装
     - findAllメソッドの実装（ページング対応）
     - findByIdメソッドの実装
     - TodoNotFoundExceptionのスロー処理
     - _要件: 要件2（一覧表示）, 要件3（詳細表示）_
 
-  - [ ] TASK-005.5: Update機能のビジネスロジック実装
+  - [x] TASK-005.5: Update機能のビジネスロジック実装
     - updateメソッドの実装
     - 更新日時の自動更新
     - 存在チェックとバリデーション
     - _要件: 要件4（編集機能）_
 
-  - [ ] TASK-005.6: Delete機能のビジネスロジック実装
+  - [x] TASK-005.6: Delete機能のビジネスロジック実装
     - deleteメソッドの実装
     - 存在チェック処理
     - _要件: 要件5（削除機能）_
 
-  - [ ] TASK-005.7: Search機能のビジネスロジック実装
+  - [x] TASK-005.7: Search機能のビジネスロジック実装
     - searchメソッドの実装
     - キーワード検索ロジック
     - ステータスフィルタリング
