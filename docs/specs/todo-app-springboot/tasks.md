@@ -27,30 +27,31 @@
 
 ## データ基盤
 
-- [ ] TASK-002: データモデルとデータベース基盤の実装
+- [x] TASK-002: データモデルとデータベース基盤の実装
   - H2データベースの設定とJPA設定の実装
   - エンティティクラスとデータベーステーブルのマッピング
   - データベース初期化とマイグレーション設定
   - _要件: 要件8（データ永続化）_
+  - **実装ノート**: H2データベース設定完了。Todoエンティティ、TodoStatus/TodoPriority Enumクラス、DatabaseConfig設定クラスを作成。JPA/@Entity設定済み。アプリケーション起動テスト成功。データベーステーブル自動生成確認済み。
 
-  - [ ] TASK-002.1: H2データベース接続設定
+  - [x] TASK-002.1: H2データベース接続設定
     - application.propertiesにH2データベース設定を追加
     - H2コンソール設定（/h2-console）の有効化
     - ファイルモードでのデータ永続化設定
     - _要件: 要件8, 要件11_
   
-  - [ ] TASK-002.2: Todoエンティティクラスの作成
+  - [x] TASK-002.2: Todoエンティティクラスの作成
     - com.example.todoapp.entity.Todo.javaの作成
     - JPAアノテーション（@Entity, @Id, @GeneratedValue）の設定
     - フィールド定義（id, title, description, status, priority, dueDate, createdAt, updatedAt）
     - _要件: 要件8（データモデル仕様）_
 
-  - [ ] TASK-002.3: Enumクラスの作成
+  - [x] TASK-002.3: Enumクラスの作成
     - TodoStatus enum（TODO, IN_PROGRESS, DONE）の作成
     - TodoPriority enum（LOW, MEDIUM, HIGH）の作成
     - _要件: 要件8（データモデル仕様）_
 
-  - [ ] TASK-002.4: データベース初期化設定
+  - [x] TASK-002.4: データベース初期化設定
     - DatabaseConfig.javaの作成
     - JPA/Hibernate設定（DDL自動生成、SQL表示）
     - エンティティスキャン設定
