@@ -211,6 +211,46 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+/* セレクトボックス専用スタイル */
+select.form-control {
+    color: #495057 !important;
+    background-color: #fff !important;
+}
+
+select.form-control option {
+    color: #495057 !important;
+    background-color: #fff !important;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    color: #495057 !important;  /* Dark text color for better visibility */
+}
+
+.badge-danger { 
+    background-color: #dc3545; 
+    color: white !important;  /* White text on red background */
+}
+
+.badge-warning { 
+    background-color: #ffc107; 
+    color: #212529 !important;  /* Dark text on yellow background */
+}
+
+.badge-success { 
+    background-color: #28a745; 
+    color: white !important;  /* White text on green background */
+}
+
+.badge-secondary { 
+    background-color: #6c757d; 
+    color: white !important;  /* White text on gray background */
+}
+
 .invalid-feedback {
     width: 100%;
     margin-top: 0.25rem;

@@ -49,8 +49,7 @@
                     <div class="col" style="flex: 1; margin-right: 20px;">
                         <h5>ステータス</h5>
                         <span th:text="${todo.status.displayName}" 
-                              th:class="|badge ${todo.status.name() == 'TODO'} ? 'badge-danger' : 
-                                       (${todo.status.name() == 'IN_PROGRESS'} ? 'badge-warning' : 'badge-success')|"
+                              class="badge badge-secondary"
                               style="font-size: 1rem; padding: 0.5rem 1rem;">
                             未完了
                         </span>
@@ -58,8 +57,7 @@
                     <div class="col" style="flex: 1; margin-right: 20px;">
                         <h5>優先度</h5>
                         <span th:text="${todo.priority.displayName}" 
-                              th:class="|badge ${todo.priority.name() == 'HIGH'} ? 'badge-danger' : 
-                                       (${todo.priority.name() == 'MEDIUM'} ? 'badge-warning' : 'badge-secondary')|"
+                              class="badge badge-warning"
                               style="font-size: 1rem; padding: 0.5rem 1rem;">
                             中
                         </span>
@@ -122,12 +120,12 @@
             font-size: 75%;
             font-weight: bold;
             border-radius: 0.25rem;
-            color: white;
+            color: #495057 !important;
         }
-        .badge-danger { background-color: #dc3545; }
-        .badge-warning { background-color: #ffc107; color: #212529; }
-        .badge-success { background-color: #28a745; }
-        .badge-secondary { background-color: #6c757d; }
+        .badge-danger { background-color: #dc3545; color: white !important; }
+        .badge-warning { background-color: #ffc107; color: #212529 !important; }
+        .badge-success { background-color: #28a745; color: white !important; }
+        .badge-secondary { background-color: #6c757d; color: white !important; }
         
         .row {
             display: flex;

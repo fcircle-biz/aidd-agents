@@ -65,8 +65,7 @@
                         <select id="status" th:field="*{status}" class="form-control">
                             <option th:each="status : ${statuses}" 
                                     th:value="${status}" 
-                                    th:text="${status.displayName}"
-                                    th:selected="${status == todoRequest.status}">未完了</option>
+                                    th:text="${status.displayName}">未完了</option>
                         </select>
                     </div>
 
@@ -75,8 +74,7 @@
                         <select id="priority" th:field="*{priority}" class="form-control">
                             <option th:each="priority : ${priorities}" 
                                     th:value="${priority}" 
-                                    th:text="${priority.displayName}"
-                                    th:selected="${priority == todoRequest.priority}">中</option>
+                                    th:text="${priority.displayName}">中</option>
                         </select>
                     </div>
 
