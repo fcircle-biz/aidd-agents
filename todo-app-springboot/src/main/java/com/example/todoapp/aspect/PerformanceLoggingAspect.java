@@ -33,9 +33,10 @@ public class PerformanceLoggingAspect {
     private final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
     
     /**
-     * サービス層のメソッド実行時間を監視
+     * サービス層のメソッド実行時間を監視（LoggingServiceImplは除外）
      */
-    @Around("execution(* com.example.todoapp.service..*.*(..))")
+    @Around("execution(* com.example.todoapp.service..*.*(..)) && " +
+            "!execution(* com.example.todoapp.service.impl.LoggingServiceImpl.*(..))")
     public Object logServiceMethodPerformance(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethodPerformance(joinPoint, "SERVICE");
     }

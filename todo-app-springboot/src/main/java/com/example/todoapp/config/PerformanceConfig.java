@@ -171,6 +171,7 @@ public class PerformanceConfig {
      */
     @Bean
     @Profile("dev")
+    @Primary
     public CacheManager developmentCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         
