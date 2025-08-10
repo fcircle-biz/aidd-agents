@@ -96,12 +96,11 @@
         </dependency>
         
         <!-- Performance: Micrometer for metrics -->
-        <!-- Temporarily disabled for development -->
-        <!-- <dependency>
+        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
-        </dependency> -->
+        </dependency>
         
         <!-- Servlet API for development controllers -->
         <dependency>

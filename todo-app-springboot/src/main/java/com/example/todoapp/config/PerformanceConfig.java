@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -73,6 +74,7 @@ public class PerformanceConfig {
      */
     @Bean
     @Profile("prod")
+    @Primary
     public CacheManager productionCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
         
@@ -81,7 +83,6 @@ public class PerformanceConfig {
                 .maximumSize(10000)
                 .expireAfterWrite(30, TimeUnit.MINUTES)
                 .expireAfterAccess(15, TimeUnit.MINUTES)
-                .refreshAfterWrite(10, TimeUnit.MINUTES)
                 .recordStats()
         );
         
