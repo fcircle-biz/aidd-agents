@@ -53,11 +53,10 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         
-        <!-- Temporarily disabled for development -->
-        <!-- <dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency> -->
+        </dependency>
         
         <dependency>
             <groupId>org.springframework.boot</groupId>
