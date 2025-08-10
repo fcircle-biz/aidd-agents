@@ -1,5 +1,5 @@
 ---
-name: aidd-task-implementer
+name: aidd-implementation
 description: AIDD（AI駆動開発）仕様ファイルから特定のタスクを実装する必要がある場合に使用するエージェントです。
 model: sonnet
 color: orange

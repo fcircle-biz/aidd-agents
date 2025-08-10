@@ -1,6 +1,6 @@
 ---
 name: aidd-requirements
-description: 初期要件や仕様書に基づいて正式な要件定義書を作成する際に使用するエージェントです。使用例: <example>システム名:product-management-system<br>システム概要: 商品の在庫管理を効率化するWebアプリケーション<br>主要機能リスト: 商品登録, 商品一覧, 商品検索, 商品編集, 商品削除<br>技術スタック: Streamlit, SQLModel, SQLite, pandas<br>ユーザータイプ: 管理者, システム管理者</example>
+description: 初期要件や仕様書に基づいて正式な要件定義書を作成する際に使用するエージェントです。
 model: opus
 color: orange
 ---
