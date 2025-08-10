@@ -2,6 +2,7 @@ package com.example.todoapp.repository;
 
 import com.example.todoapp.entity.Todo;
 import com.example.todoapp.entity.TodoStatus;
+import com.example.todoapp.entity.TodoPriority;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -78,6 +79,15 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
      * @return 指定したステータスのTodo件数
      */
     Long countByStatus(TodoStatus status);
+    
+    /**
+     * 優先度別のTodo件数取得
+     * ダッシュボード機能や統計表示に使用
+     * 
+     * @param priority 集計対象の優先度
+     * @return 指定した優先度のTodo件数
+     */
+    Long countByPriority(TodoPriority priority);
     
     /**
      * 期限切れかつ未完了のTodo検索

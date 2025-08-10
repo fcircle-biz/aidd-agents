@@ -80,6 +80,8 @@ java -jar target/todo-app-1.0.0.jar
 - H2 Console: http://localhost:8080/h2-console
 - REST API: http://localhost:8080/api/todos
 - Log Management API: http://localhost:8080/admin/logging/levels
+- Development Tools: http://localhost:8080/dev/ (development profile only)
+- Actuator Endpoints: http://localhost:8080/dev/actuator (development profile only)
 
 ## API エンドポイント
 
@@ -126,6 +128,7 @@ GET    /admin/logging/info                - ログ設定情報取得
 - [x] テストスイートの実装 (TASK-009)
 - [x] バリデーション機能の実装 (TASK-010)
 - [x] 包括的ログシステムの実装 (TASK-011)
+- [x] 開発環境最適化の実装 (TASK-012)
 
 ## ライセンス
 
