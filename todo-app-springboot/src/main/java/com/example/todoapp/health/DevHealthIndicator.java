@@ -2,14 +2,14 @@ package com.example.todoapp.health;
 
 import com.example.todoapp.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuator.health.Health;
-import org.springframework.boot.actuator.health.HealthIndicator;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Development environment specific health indicator.
@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
  */
 @Component("devHealth")
 @Profile("dev")
-public class DevHealthIndicator implements HealthIndicator {
+public class DevHealthIndicator {
 
     @Autowired
     private TodoRepository todoRepository;
 
-    @Override
-    public Health health() {
+    public Map<String, Object> getHealthInfo() {
+        Map<String, Object> healthInfo = new HashMap<>();
         try {
             // Database connectivity check
             long todoCount = todoRepository.count();
@@ -38,33 +38,32 @@ public class DevHealthIndicator implements HealthIndicator {
             int threadCount = ManagementFactory.getThreadMXBean().getThreadCount();
             
             // Build health status
-            Health.Builder healthBuilder = Health.up()
-                    .withDetail("database", "Connected")
-                    .withDetail("todoCount", todoCount)
-                    .withDetail("memoryUsagePercent", String.format("%.2f%%", memoryUsagePercent))
-                    .withDetail("heapUsedMB", heapUsed / 1024 / 1024)
-                    .withDetail("heapMaxMB", heapMax / 1024 / 1024)
-                    .withDetail("threadCount", threadCount)
-                    .withDetail("checkTime", LocalDateTime.now())
-                    .withDetail("environment", "Development");
+            healthInfo.put("status", "UP");
+            healthInfo.put("database", "Connected");
+            healthInfo.put("todoCount", todoCount);
+            healthInfo.put("memoryUsagePercent", String.format("%.2f%%", memoryUsagePercent));
+            healthInfo.put("heapUsedMB", heapUsed / 1024 / 1024);
+            healthInfo.put("heapMaxMB", heapMax / 1024 / 1024);
+            healthInfo.put("threadCount", threadCount);
+            healthInfo.put("checkTime", LocalDateTime.now());
+            healthInfo.put("environment", "Development");
             
             // Add warnings for high resource usage
             if (memoryUsagePercent > 80) {
-                healthBuilder.withDetail("memoryWarning", "Memory usage is high");
+                healthInfo.put("memoryWarning", "Memory usage is high");
             }
             
             if (threadCount > 100) {
-                healthBuilder.withDetail("threadWarning", "Thread count is high");
+                healthInfo.put("threadWarning", "Thread count is high");
             }
             
-            return healthBuilder.build();
-            
         } catch (Exception e) {
-            return Health.down()
-                    .withDetail("error", e.getMessage())
-                    .withDetail("checkTime", LocalDateTime.now())
-                    .withDetail("environment", "Development")
-                    .build();
+            healthInfo.put("status", "DOWN");
+            healthInfo.put("error", e.getMessage());
+            healthInfo.put("checkTime", LocalDateTime.now());
+            healthInfo.put("environment", "Development");
         }
+        
+        return healthInfo;
     }
 }
