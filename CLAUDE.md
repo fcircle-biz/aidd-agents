@@ -4,45 +4,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an AI-Driven Development (AIDD) project that contains:
+This is an AIDD (AI-Driven Development) Agents project containing:
 
-1. **AIDD Agent System**: A collection of specialized AI agents for software development workflow
-2. **Todo App Implementation**: A fully-featured Spring Boot todo management application
-3. **Development Templates**: Structured templates for requirements, design, and task generation
+1. **AIDD Agent System**: Six specialized agents for software development workflow
+2. **Todo Management Application**: A production-ready Spring Boot application created through the AIDD process
+3. **Specification Documents**: Complete development documentation (requirements, design, tasks) 
 
 ## Core Architecture
 
 ### AIDD Agent System
 
-The project contains specialized agents designed for different phases of AI-driven development:
+The project demonstrates a 6-stage AI-driven development workflow:
 
-- **Requirements Analysis** (`aidd-step01-requirements`): Converts initial requirements into formal requirement definitions
-- **System Design** (`aidd-step02-design`): Creates comprehensive design documents from requirements
-- **Task Planning** (`aidd-step03-task-plan`): Generates detailed implementation task lists
-- **Implementation** (`aidd-step04-implementation`): Handles actual code implementation from specifications
-- **Issue Management** (`aidd-step05-issue-management`): Creates and manages GitHub issues in Japanese
-- **PR Workflow** (`aidd-step06-pr-workflow`): Handles commits, pushes, and pull request creation
+- `aidd-step01-requirements`: Initial specifications → formal requirements definition
+- `aidd-step02-design`: Requirements → comprehensive system design  
+- `aidd-step03-task-plan`: Design → detailed implementation tasks
+- `aidd-step04-implementation`: Specifications → working code
+- `aidd-step05-issue-management`: GitHub issue creation/management (Japanese)
+- `aidd-step06-pr-workflow`: Commit, push, and pull request creation (Japanese)
 
-### Templates Structure
-
-Located in `/templates/`:
-- `requirements-definition-prompt.md`: Template for generating detailed requirement specifications
-- `design-generation-prompt.md`: Template for creating system design documents
-- `task-generation-prompt.md`: Template for breaking design into implementation tasks
-
-### Todo App Spring Boot Application
+### Todo Application Architecture
 
 Located in `/todo-app-springboot/`:
-- **Architecture**: Layered architecture with Spring Boot 3.x, Java 17, H2 database
-- **Layers**: Controller → Service → Repository → Entity
+- **Pattern**: Layered architecture (Controller → Service → Repository → Entity)
+- **Technology**: Spring Boot 3.2.1, Java 17, H2 Database, Maven
 - **Features**: CRUD operations, validation, error handling, REST API, Thymeleaf web UI
-- **Monitoring**: Actuator endpoints, Prometheus metrics, Grafana dashboards
+- **Monitoring**: Actuator, Prometheus metrics, Grafana dashboards
+- **Profiles**: dev, prod, test configurations
 
 ## Development Commands
 
-### Todo App Development
+### Todo Application Development
 
-Navigate to `todo-app-springboot/` directory first:
+Navigate to `todo-app-springboot/` first:
 
 ```bash
 cd todo-app-springboot
@@ -50,121 +44,188 @@ cd todo-app-springboot
 
 **Build and Run:**
 ```bash
-# Maven development mode
-mvn spring-boot:run
-
-# Development profile with additional dev features  
+# Development mode with debugging features
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
-# Build and run JAR
+# Standard mode  
+mvn spring-boot:run
+
+# Build JAR and run
 mvn clean package
 java -jar target/todo-app-1.0.0.jar
 ```
 
 **Testing:**
 ```bash
-# Run all tests
+# All tests
 mvn test
 
-# Run integration tests only
-mvn test -Dtest="*IntegrationTest"
+# Integration tests only
+mvn test -Dtest="*IntegrationTest"  
 
-# Run end-to-end tests only
+# End-to-end tests only
 mvn test -Dtest="CompleteEndToEndIntegrationTest"
 
-# Run specific test profile
-mvn test -Dspring.profiles.active=test
+# Single test class
+mvn test -Dtest="TodoServiceImplTest"
+
+# Single test method
+mvn test -Dtest="TodoServiceImplTest#testCreateTodo"
 ```
 
-**Docker Deployment:**
+**Production Deployment:**
 ```bash
-# Production deployment
+# Docker deployment
 docker-compose up -d
 
-# View logs
+# Monitor logs
 docker-compose logs -f todo-app
 
 # Health check
 curl http://localhost:8080/actuator/health/production
 ```
 
-### Todo App Access URLs
+### Application Access URLs
 
-- **Web UI**: http://localhost:8080/todos
-- **REST API**: http://localhost:8080/api/todos  
-- **H2 Console**: http://localhost:8080/h2-console
-- **Dev Tools** (dev profile): http://localhost:8080/dev/
-- **Actuator**: http://localhost:8080/dev/actuator (dev profile)
-- **Grafana Dashboard**: http://localhost:3000 (admin/admin123)
-- **Prometheus**: http://localhost:9090
+**Development Profile (dev):**
+- Web UI: http://localhost:8080/todos
+- REST API: http://localhost:8080/api/todos
+- H2 Console: http://localhost:8080/h2-console
+- Dev Tools: http://localhost:8080/dev/
+- Actuator: http://localhost:8080/dev/actuator
+
+**Production Profile:**
+- Web UI: http://localhost:8080/todos
+- Health Check: http://localhost:8080/actuator/health/production
+- Grafana: http://localhost:3000 (admin/admin123)
+- Prometheus: http://localhost:9090
+
+## AIDD Agent Usage
+
+Use the Task tool to invoke specialized agents:
+
+```bash
+# Requirements definition
+Task: aidd-step01-requirements
+Input: Initial specifications, system overview
+Output: docs/specs/{system-name}/requirements.md
+
+# System design  
+Task: aidd-step02-design
+Input: requirements.md file path
+Output: docs/specs/{system-name}/design.md
+
+# Implementation planning
+Task: aidd-step03-task-plan
+Input: design.md file path  
+Output: docs/specs/{system-name}/tasks.md
+
+# Code implementation
+Task: aidd-step04-implementation
+Input: specification files, specific task
+Output: Working implementation code
+
+# GitHub issue management (Japanese)
+Task: aidd-step05-issue-management
+Input: Bug reports, feature requests
+Output: Formatted GitHub issues
+
+# PR workflow (Japanese)  
+Task: aidd-step06-pr-workflow
+Input: Completed work
+Output: Commits, pushes, pull requests
+```
 
 ## Key Implementation Patterns
 
-### AIDD Workflow Pattern
+### Spring Boot Application Structure
 
-1. **Requirements** → `docs/specs/{system-name}/requirements.md`
-2. **Design** → `docs/specs/{system-name}/design.md`  
-3. **Tasks** → `docs/specs/{system-name}/tasks.md`
-4. **Implementation** → Working code with tests
-5. **Issue Management** → GitHub issues in Japanese
-6. **PR Workflow** → Commits, pushes, pull requests
-
-### Todo App Patterns
-
-**Entity Design:**
-- Use Spring Data JPA entities with validation annotations
-- Enum types for status and priority (`TodoStatus`, `TodoPriority`)
-- Audit fields (createdAt, updatedAt) with automatic timestamps
+**Entity Layer:**
+- Use JPA entities with validation annotations
+- Enum types for controlled values (TodoStatus, TodoPriority)
+- Audit fields with automatic timestamps
 
 **Service Layer:**
-- Interface-based services with implementation classes
-- Transaction management with `@Transactional`
-- Custom exceptions for business logic errors
+- Interface-based services with implementation classes  
+- `@Transactional` for database operations
+- Custom business exceptions
 
-**Controller Pattern:**
+**Controller Layer:**
 - Separate REST (`TodoRestController`) and Web (`TodoWebController`) controllers
-- DTO pattern for API responses (`TodoResponse`, `TodoRequest`)
+- DTO pattern for API communication
 - Comprehensive validation with custom validators
 
 **Error Handling:**
 - Global exception handler (`GlobalExceptionHandler`)
-- Custom business exceptions (`BusinessException`, `TodoNotFoundException`)
 - Structured error responses with correlation IDs
+- User-friendly error messages
 
 **Testing Strategy:**
 - Unit tests for each layer (Repository, Service, Controller)
 - Integration tests for cross-layer functionality
 - End-to-end tests with actual HTTP server
-- Performance and security tests
+- Performance and security test suites
 
-## Development Environment Setup
+### Development Profiles
 
-### Prerequisites
-- Java 17+
-- Maven 3.6+
-- Docker & Docker Compose (for production deployment)
+**dev profile:**
+- H2 console access
+- Development-specific endpoints under `/dev/`
+- Enhanced logging and debugging features
+- Sample data loading
 
-### Spring Profiles
-- **default**: Basic configuration
-- **dev**: Development mode with additional debugging features, dev controllers, H2 console access
-- **prod**: Production mode with security, monitoring, performance optimizations  
-- **test**: Test configuration with in-memory database
+**prod profile:**  
+- Production security settings
+- Monitoring and metrics enabled
+- Performance optimizations
+- Health checks for production readiness
 
-## AIDD Agent Usage
+**test profile:**
+- In-memory database configuration
+- Test-specific property overrides
+- Isolated test environment
 
-When working with AIDD agents, use the Task tool to invoke specific agents:
+## Architecture Insights
 
-- Use `aidd-step01-requirements` for converting initial specs to formal requirements
-- Use `aidd-step02-design` for creating system design from requirements  
-- Use `aidd-step03-task-plan` for generating implementation tasks from design
-- Use `aidd-step04-implementation` for implementing specific tasks
-- Use `aidd-step05-issue-management` for GitHub issue creation (Japanese)
-- Use `aidd-step06-pr-workflow` for committing and creating pull requests (Japanese)
+### AIDD Workflow Pattern
+
+The complete specification chain demonstrates AI-driven development:
+1. `docs/specs/todo-app-springboot/requirements.md` - Formal requirements
+2. `docs/specs/todo-app-springboot/design.md` - System architecture  
+3. `docs/specs/todo-app-springboot/tasks.md` - Implementation roadmap
+4. `todo-app-springboot/` - Final implementation
+
+### Spring Boot Features Utilized
+
+**Core Spring Boot:**
+- Auto-configuration for rapid setup
+- Profile-based configuration management
+- Embedded server (Tomcat) for easy deployment
+
+**Data Layer:**
+- Spring Data JPA for repository pattern
+- H2 embedded database for development
+- HikariCP connection pooling
+
+**Web Layer:**
+- Spring MVC for REST APIs
+- Thymeleaf for server-side rendering
+- Static resource handling
+
+**Operations:**
+- Spring Boot Actuator for monitoring
+- Micrometer metrics with Prometheus
+- Custom health indicators
+
+**Security:**
+- Spring Security for web security
+- CSRF protection
+- SQL injection and XSS protection
 
 ## Important Notes
 
-- All Todo App code uses Spring Boot best practices with comprehensive error handling
-- Development profile includes extensive debugging and monitoring tools
-- Production deployment includes Grafana dashboards and Prometheus metrics
-- AIDD agents work in Japanese for issue management and PR workflows
-- Templates follow structured prompts for consistency across projects
+- All development commands assume working directory is `todo-app-springboot/`
+- The Todo app serves as a complete example of AIDD agent-generated code
+- AIDD agents work in Japanese for GitHub workflows (issues, PRs)
+- Use development profile for debugging and testing features
+- Production deployment includes comprehensive monitoring stack
