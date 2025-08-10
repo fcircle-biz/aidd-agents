@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Todo Application
   todo-app:
@@ -11,26 +9,26 @@ services:
         BUILD_DATE: ${BUILD_DATE:-$(date -u +"%Y-%m-%dT%H:%M:%SZ")}
         VCS_REF: ${VCS_REF:-$(git rev-parse --short HEAD)}
     container_name: todo-app-prod
-    restart: unless-stopped
+    restart: "no"
     ports:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - JAVA_OPTS=-Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+      - JAVA_OPTS=-Xms256m -Xmx512m -XX:+UseSerialGC
       - SPRING_DATASOURCE_URL=jdbc:h2:file:/app/data/tododb
-      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=50
-      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=10
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=20
+      - SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE=5
     volumes:
       - todo-data:/app/data
       - todo-logs:/app/logs
     networks:
       - todo-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health/production"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+    #   interval: 30s
+    #   timeout: 15s
+    #   retries: 5
+    #   start_period: 120s
     depends_on:
       - prometheus
       - grafana

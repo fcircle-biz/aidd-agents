@@ -53,10 +53,11 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
         
-        <dependency>
+        <!-- Temporarily disabled for development -->
+        <!-- <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+        </dependency> -->
         
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -76,11 +77,12 @@
         </dependency>
         
         <!-- Performance: Redis Cache Implementation (optional) -->
-        <dependency>
+        <!-- Temporarily disabled for development -->
+        <!-- <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <optional>true</optional>
-        </dependency>
+        </dependency> -->
         
         <!-- Performance: Caffeine Cache Implementation -->
         <dependency>
@@ -95,11 +97,12 @@
         </dependency>
         
         <!-- Performance: Micrometer for metrics -->
-        <dependency>
+        <!-- Temporarily disabled for development -->
+        <!-- <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
-        </dependency>
+        </dependency> -->
         
         <!-- Servlet API for development controllers -->
         <dependency>

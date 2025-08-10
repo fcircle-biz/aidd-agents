@@ -2,7 +2,7 @@
 # Multi-stage build for optimized production deployment
 
 # Build stage
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 
 # Set build arguments
 ARG APP_VERSION=1.0.0
@@ -17,7 +17,7 @@ LABEL maintainer="system@example.com" \
       vcs-ref="${VCS_REF}"
 
 # Install Maven
-RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache maven
 
 # Set working directory
 WORKDIR /app
@@ -30,18 +30,17 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Production stage
-FROM openjdk:17-jre-slim AS production
+FROM eclipse-temurin:17-jre-alpine AS production
 
 # Create non-root user for security
-RUN groupadd -r todoapp && useradd -r -g todoapp todoapp
+RUN addgroup -g 1001 -S todoapp && \
+    adduser -u 1001 -S todoapp -G todoapp
 
 # Set working directory
 WORKDIR /app
 
-# Install necessary packages and clean up
-RUN apt-get update && \
-    apt-get install -y curl && \
-    rm -rf /var/lib/apt/lists/*
+# Install necessary packages
+RUN apk add --no-cache curl
 
 # Copy the built JAR from build stage
 COPY --from=build /app/target/todo-app-*.jar app.jar
@@ -54,7 +53,7 @@ RUN mkdir -p /app/logs /app/data && \
 USER todoapp
 
 # Set JVM options for production
-ENV JAVA_OPTS="-Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/logs/heapdump.hprof"
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseSerialGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/logs/heapdump.hprof"
 
 # Set Spring profiles
 ENV SPRING_PROFILES_ACTIVE=prod
@@ -63,8 +62,8 @@ ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8080
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8080/actuator/health/production || exit 1
+HEALTHCHECK --interval=30s --timeout=15s --start-period=120s --retries=5 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Start the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar app.jar"]

@@ -197,7 +197,7 @@ public class AuditLoggingAspect {
                               "(execution(* *..create(..)) || " +
                               "execution(* *..update(..)) || " +
                               "execution(* *..delete(..)) || " +
-                              "execution(* *..findById(..))", throwing = "exception")
+                              "execution(* *..findById(..)))", throwing = "exception")
     public void logOperationFailure(JoinPoint joinPoint, Throwable exception) {
         try {
             String operation = determineOperation(joinPoint.getSignature().getName());
