@@ -1,0 +1,494 @@
+# 実装計画
+
+## プロジェクト基盤
+
+- [ ] TASK-001: プロジェクト構造とコア設定の作成
+  - Spring Initializrを使用してプロジェクトを生成
+  - 必要な依存関係（Web, Data JPA, H2, Thymeleaf, Validation, DevTools）を追加
+  - プロジェクトディレクトリ構造（controller, service, repository, entity, dto, exception, config）の作成
+  - _要件: 要件11（開発環境セットアップ）_
+
+  - [ ] TASK-001.1: Mavenプロジェクトの初期化
+    - pom.xmlへの依存関係追加（Spring Boot 3.x, Java 17）
+    - Spring Boot Starter Parent設定
+    - _要件: 要件11_
+  
+  - [ ] TASK-001.2: アプリケーション設定ファイルの作成
+    - application.propertiesの作成（ポート設定、コンテキストパス）
+    - application-dev.properties（開発環境設定）
+    - application-prod.properties（本番環境設定）
+    - _要件: 要件11_
+
+  - [ ] TASK-001.3: メインアプリケーションクラスの作成
+    - TodoApplication.javaの作成（@SpringBootApplication）
+    - メインメソッドの実装
+    - _要件: 要件11_
+
+## データ基盤
+
+- [ ] TASK-002: データモデルとデータベース基盤の実装
+  - H2データベースの設定とJPA設定の実装
+  - エンティティクラスとデータベーステーブルのマッピング
+  - データベース初期化とマイグレーション設定
+  - _要件: 要件8（データ永続化）_
+
+  - [ ] TASK-002.1: H2データベース接続設定
+    - application.propertiesにH2データベース設定を追加
+    - H2コンソール設定（/h2-console）の有効化
+    - ファイルモードでのデータ永続化設定
+    - _要件: 要件8, 要件11_
+  
+  - [ ] TASK-002.2: Todoエンティティクラスの作成
+    - com.example.todoapp.entity.Todo.javaの作成
+    - JPAアノテーション（@Entity, @Id, @GeneratedValue）の設定
+    - フィールド定義（id, title, description, status, priority, dueDate, createdAt, updatedAt）
+    - _要件: 要件8（データモデル仕様）_
+
+  - [ ] TASK-002.3: Enumクラスの作成
+    - TodoStatus enum（TODO, IN_PROGRESS, DONE）の作成
+    - TodoPriority enum（LOW, MEDIUM, HIGH）の作成
+    - _要件: 要件8（データモデル仕様）_
+
+  - [ ] TASK-002.4: データベース初期化設定
+    - DatabaseConfig.javaの作成
+    - JPA/Hibernate設定（DDL自動生成、SQL表示）
+    - エンティティスキャン設定
+    - _要件: 要件8_
+
+## データアクセス層
+
+- [ ] TASK-003: リポジトリ層の実装
+  - Spring Data JPAリポジトリの作成
+  - カスタムクエリメソッドの実装
+  - ページング・ソート機能の実装
+  - _要件: 要件8（JPA使用）_
+
+  - [ ] TASK-003.1: TodoRepositoryインターフェースの作成
+    - com.example.todoapp.repository.TodoRepository.javaの作成
+    - JpaRepositoryの継承
+    - 基本CRUD操作の自動実装
+    - _要件: 要件8_
+  
+  - [ ] TASK-003.2: カスタムクエリメソッドの実装
+    - findByStatus(TodoStatus status)メソッドの定義
+    - findByTitleContainingOrDescriptionContaining()メソッドの定義
+    - findByDueDateBefore(LocalDate date)メソッドの定義
+    - _要件: 要件6（検索機能）_
+
+  - [ ] TASK-003.3: ページング対応クエリの実装
+    - Page<Todo> findAll(Pageable pageable)の実装
+    - ソート機能の統合
+    - _要件: 要件2（一覧表示の降順ソート）_
+
+## DTOとマッパー
+
+- [ ] TASK-004: データ転送オブジェクトとマッパーの実装
+  - リクエスト/レスポンスDTOの作成
+  - エンティティとDTOの変換ユーティリティ
+  - 検索条件DTOの実装
+  - _要件: 要件7（API仕様）_
+
+  - [ ] TASK-004.1: TodoRequest DTOの作成
+    - com.example.todoapp.dto.TodoRequest.javaの作成
+    - バリデーションアノテーション（@NotBlank, @Size）の追加
+    - フィールド定義（title, description, status, priority, dueDate）
+    - _要件: 要件1（バリデーション）, 要件4（バリデーション）_
+
+  - [ ] TASK-004.2: TodoResponse DTOの作成
+    - com.example.todoapp.dto.TodoResponse.javaの作成
+    - APIレスポンス用フィールド定義
+    - _要件: 要件7（JSON形式レスポンス）_
+
+  - [ ] TASK-004.3: TodoSearchCriteria DTOの作成
+    - 検索条件フィールド（keyword, status, priority）の定義
+    - _要件: 要件6（検索条件）_
+
+  - [ ] TASK-004.4: TodoMapperユーティリティの作成
+    - com.example.todoapp.util.TodoMapper.javaの作成
+    - エンティティからDTOへの変換メソッド
+    - DTOからエンティティへの変換メソッド
+    - _要件: 要件7_
+
+## ビジネスロジック層
+
+- [ ] TASK-005: サービス層の実装
+  - ビジネスロジックとバリデーションの実装
+  - トランザクション管理の設定
+  - エラーハンドリングの統合
+  - _要件: 要件1-6（各機能のビジネスロジック）_
+
+  - [ ] TASK-005.1: TodoServiceインターフェースの作成
+    - com.example.todoapp.service.TodoService.javaの作成
+    - CRUDメソッドの定義
+    - 検索メソッドの定義
+    - _要件: 要件1-6_
+
+  - [ ] TASK-005.2: TodoServiceImplクラスの実装
+    - com.example.todoapp.service.impl.TodoServiceImpl.javaの作成
+    - @Service, @Transactionalアノテーションの設定
+    - TodoRepositoryの依存性注入
+    - _要件: 要件1-6_
+
+  - [ ] TASK-005.3: Create機能のビジネスロジック実装
+    - createメソッドの実装
+    - 作成日時の自動設定
+    - バリデーション処理
+    - _要件: 要件1（Todo作成機能）_
+
+  - [ ] TASK-005.4: Read機能のビジネスロジック実装
+    - findAllメソッドの実装（ページング対応）
+    - findByIdメソッドの実装
+    - TodoNotFoundExceptionのスロー処理
+    - _要件: 要件2（一覧表示）, 要件3（詳細表示）_
+
+  - [ ] TASK-005.5: Update機能のビジネスロジック実装
+    - updateメソッドの実装
+    - 更新日時の自動更新
+    - 存在チェックとバリデーション
+    - _要件: 要件4（編集機能）_
+
+  - [ ] TASK-005.6: Delete機能のビジネスロジック実装
+    - deleteメソッドの実装
+    - 存在チェック処理
+    - _要件: 要件5（削除機能）_
+
+  - [ ] TASK-005.7: Search機能のビジネスロジック実装
+    - searchメソッドの実装
+    - キーワード検索ロジック
+    - ステータスフィルタリング
+    - _要件: 要件6（検索機能）_
+
+## エラーハンドリング
+
+- [ ] TASK-006: 例外処理とエラーハンドリングの実装
+  - カスタム例外クラスの作成
+  - グローバル例外ハンドラーの実装
+  - エラーレスポンスの統一化
+  - _要件: 要件9（エラーハンドリング）_
+
+  - [ ] TASK-006.1: カスタム例外クラスの作成
+    - com.example.todoapp.exception.TodoNotFoundException.javaの作成
+    - BusinessException.javaの作成
+    - _要件: 要件9_
+
+  - [ ] TASK-006.2: GlobalExceptionHandlerの実装
+    - com.example.todoapp.exception.GlobalExceptionHandler.javaの作成
+    - @ControllerAdviceアノテーションの設定
+    - 各種例外のハンドリングメソッド実装
+    - _要件: 要件9_
+
+  - [ ] TASK-006.3: エラーレスポンスDTOの作成
+    - ErrorResponse.javaの作成
+    - エラー情報フィールド（status, message, errors）の定義
+    - _要件: 要件9_
+
+  - [ ] TASK-006.4: カスタムエラーページの作成
+    - templates/error/404.htmlの作成
+    - templates/error/500.htmlの作成
+    - _要件: 要件9（カスタムエラーページ）_
+
+## REST API実装
+
+- [ ] TASK-007: REST APIコントローラーの実装
+  - RESTful APIエンドポイントの作成
+  - JSONレスポンスの実装
+  - HTTPステータスコードの適切な設定
+  - _要件: 要件7（RESTful API提供）_
+
+  - [ ] TASK-007.1: TodoRestControllerクラスの作成
+    - com.example.todoapp.controller.TodoRestController.javaの作成
+    - @RestController, @RequestMappingアノテーションの設定
+    - TodoServiceの依存性注入
+    - _要件: 要件7_
+
+  - [ ] TASK-007.2: GET /api/todos エンドポイントの実装
+    - getAllTodosメソッドの実装
+    - ページング対応
+    - JSON形式のレスポンス返却
+    - _要件: 要件7（一覧取得API）_
+
+  - [ ] TASK-007.3: GET /api/todos/{id} エンドポイントの実装
+    - getTodoByIdメソッドの実装
+    - 404エラーハンドリング
+    - _要件: 要件7（詳細取得API）_
+
+  - [ ] TASK-007.4: POST /api/todos エンドポイントの実装
+    - createTodoメソッドの実装
+    - @Valid, @RequestBodyアノテーションの使用
+    - 201 Createdステータスの返却
+    - _要件: 要件7（作成API）_
+
+  - [ ] TASK-007.5: PUT /api/todos/{id} エンドポイントの実装
+    - updateTodoメソッドの実装
+    - バリデーション処理
+    - 200 OKステータスの返却
+    - _要件: 要件7（更新API）_
+
+  - [ ] TASK-007.6: DELETE /api/todos/{id} エンドポイントの実装
+    - deleteTodoメソッドの実装
+    - 204 No Contentステータスの返却
+    - _要件: 要件7（削除API）_
+
+  - [ ] TASK-007.7: GET /api/todos/search エンドポイントの実装
+    - searchTodosメソッドの実装
+    - クエリパラメータの処理
+    - _要件: 要件6, 要件7（検索API）_
+
+## Web UI実装
+
+- [ ] TASK-008: Thymeleafテンプレートとレイアウトの実装
+  - 共通レイアウトテンプレートの作成
+  - スタイルシートとJavaScriptの統合
+  - レスポンシブデザインの実装
+  - _要件: 要件1-6（Web画面）_
+
+  - [ ] TASK-008.1: レイアウトテンプレートの作成
+    - templates/layout/layout.htmlの作成
+    - ヘッダー、フッター、ナビゲーションの実装
+    - Thymeleaf Layout Dialectの設定
+    - _要件: 要件2（画面構成）_
+
+  - [ ] TASK-008.2: CSSスタイルシートの作成
+    - static/css/style.cssの作成
+    - レスポンシブデザインの実装
+    - フォーム、テーブル、ボタンのスタイリング
+    - _要件: 要件1-6（UI要件）_
+
+  - [ ] TASK-008.3: JavaScriptファイルの作成
+    - static/js/app.jsの作成
+    - 削除確認ダイアログの実装
+    - フォームバリデーションの強化
+    - _要件: 要件5（確認ダイアログ）_
+
+## Webコントローラー実装
+
+- [ ] TASK-009: Webコントローラーの実装
+  - MVCパターンに基づくコントローラー実装
+  - モデル属性とビューの統合
+  - フラッシュメッセージの実装
+  - _要件: 要件1-6（Web機能）_
+
+  - [ ] TASK-009.1: TodoWebControllerクラスの作成
+    - com.example.todoapp.controller.TodoWebController.javaの作成
+    - @Controller, @RequestMappingアノテーションの設定
+    - TodoServiceの依存性注入
+    - _要件: 要件1-6_
+
+  - [ ] TASK-009.2: Todo一覧画面の実装
+    - showListメソッドの実装
+    - templates/todo/list.htmlの作成
+    - ページネーション機能の実装
+    - _要件: 要件2（一覧表示機能）_
+
+  - [ ] TASK-009.3: Todo詳細画面の実装
+    - showDetailメソッドの実装
+    - templates/todo/detail.htmlの作成
+    - 編集・削除ボタンの配置
+    - _要件: 要件3（詳細表示機能）_
+
+  - [ ] TASK-009.4: Todo作成フォームの実装
+    - showCreateFormメソッドの実装
+    - createメソッドの実装
+    - templates/todo/form.htmlの作成（作成・編集共通）
+    - _要件: 要件1（作成機能）_
+
+  - [ ] TASK-009.5: Todo編集フォームの実装
+    - showEditFormメソッドの実装
+    - updateメソッドの実装
+    - 既存データの表示処理
+    - _要件: 要件4（編集機能）_
+
+  - [ ] TASK-009.6: Todo削除機能の実装
+    - deleteメソッドの実装
+    - 削除成功メッセージの表示
+    - 一覧画面へのリダイレクト
+    - _要件: 要件5（削除機能）_
+
+  - [ ] TASK-009.7: Todo検索機能の実装
+    - searchメソッドの実装
+    - templates/todo/search.htmlの作成
+    - 検索フォームと結果表示
+    - _要件: 要件6（検索機能）_
+
+## バリデーション実装
+
+- [ ] TASK-010: 入力検証とバリデーションの実装
+  - Bean Validationの設定
+  - カスタムバリデーターの作成
+  - エラーメッセージのカスタマイズ
+  - _要件: 要件1, 要件4（バリデーション要件）_
+
+  - [ ] TASK-010.1: バリデーションアノテーションの適用
+    - TodoRequestクラスへのアノテーション追加
+    - @NotBlank, @Size, @Futureなどの設定
+    - _要件: 要件1（タイトル必須、100文字以内）_
+
+  - [ ] TASK-010.2: バリデーションメッセージの設定
+    - messages.propertiesの作成
+    - 日本語エラーメッセージの定義
+    - _要件: 要件1, 要件4（エラーメッセージ表示）_
+
+  - [ ] TASK-010.3: フォームバリデーションの統合
+    - BindingResultの処理
+    - エラー時のフォーム再表示
+    - フィールドエラーの表示
+    - _要件: 要件1, 要件4_
+
+## ログ管理実装
+
+- [ ] TASK-011: ロギングシステムの実装
+  - Logbackの設定
+  - ログレベルの設定
+  - ログローテーションの実装
+  - _要件: 要件10（ログ管理）_
+
+  - [ ] TASK-011.1: Logback設定ファイルの作成
+    - logback-spring.xmlの作成
+    - 開発環境と本番環境の設定分離
+    - _要件: 要件10_
+
+  - [ ] TASK-011.2: アプリケーションログの実装
+    - 各サービスクラスへのLogger注入
+    - CRUD操作のINFOレベルログ記録
+    - エラー時のERRORレベルログ記録
+    - _要件: 要件10（INFO/ERRORレベル）_
+
+  - [ ] TASK-011.3: ログローテーション設定
+    - RollingFileAppenderの設定
+    - 10MB超過時の自動ローテーション
+    - 30日間のログ保持設定
+    - _要件: 要件10（ログローテーション）_
+
+## テスト実装
+
+- [ ] TASK-012: テストの実装
+  - 単体テストの作成
+  - 統合テストの作成
+  - APIテストの実装
+  - _要件: 要件12（テスト環境）_
+
+  - [ ] TASK-012.1: サービス層の単体テスト
+    - TodoServiceImplTest.javaの作成
+    - Mockitoを使用したモックテスト
+    - 各メソッドのテストケース作成
+    - _要件: 要件12_
+
+  - [ ] TASK-012.2: リポジトリ層の統合テスト
+    - TodoRepositoryTest.javaの作成
+    - @DataJpaTestアノテーションの使用
+    - インメモリH2データベースでのテスト
+    - _要件: 要件12_
+
+  - [ ] TASK-012.3: REST APIの統合テスト
+    - TodoRestControllerTest.javaの作成
+    - MockMvcを使用したAPIテスト
+    - 各エンドポイントのテスト
+    - _要件: 要件12（MockMvc使用）_
+
+  - [ ] TASK-012.4: Webコントローラーの統合テスト
+    - TodoWebControllerTest.javaの作成
+    - @SpringBootTestアノテーションの使用
+    - 画面遷移とフォーム送信のテスト
+    - _要件: 要件12_
+
+## 開発環境設定
+
+- [ ] TASK-013: 開発環境の最適化
+  - Spring Boot DevToolsの設定
+  - 開発用データの準備
+  - デバッグ設定の最適化
+  - _要件: 要件11（開発環境）_
+
+  - [ ] TASK-013.1: DevToolsの設定
+    - 自動リスタート設定
+    - ライブリロード設定
+    - _要件: 要件11_
+
+  - [ ] TASK-013.2: 開発用データ初期化クラスの作成
+    - DevDataInitializer.javaの作成
+    - @Profileアノテーションでdev環境限定
+    - サンプルTodoデータの投入
+    - _要件: 要件11_
+
+  - [ ] TASK-013.3: デバッグ用設定
+    - SQLクエリログの有効化
+    - デバッグレベルログの設定
+    - _要件: 要件10（デバッグモード）_
+
+## セキュリティ基本実装
+
+- [ ] TASK-014: セキュリティ対策の実装
+  - 基本的なセキュリティ設定
+  - XSS対策の確認
+  - SQLインジェクション対策の確認
+  - _要件: セキュリティ要件_
+
+  - [ ] TASK-014.1: セキュリティ設定クラスの作成
+    - SecurityConfig.javaの作成（簡易版）
+    - CSRF設定（APIは除外）
+    - H2コンソールアクセス設定
+    - _要件: セキュリティ要件_
+
+  - [ ] TASK-014.2: XSS対策の実装確認
+    - Thymeleafの自動エスケープ機能の確認
+    - 入力値のサニタイゼーション
+    - _要件: セキュリティ要件（XSS対策）_
+
+  - [ ] TASK-014.3: SQLインジェクション対策の確認
+    - JPAパラメータバインディングの使用確認
+    - カスタムクエリの安全性確認
+    - _要件: セキュリティ要件（SQLインジェクション対策）_
+
+## パフォーマンス最適化
+
+- [ ] TASK-015: パフォーマンスチューニング
+  - データベースインデックスの作成
+  - キャッシュ設定
+  - 接続プールの最適化
+  - _要件: パフォーマンス要件_
+
+  - [ ] TASK-015.1: データベースインデックスの作成
+    - status, dueDate, titleカラムへのインデックス追加
+    - 複合インデックスの作成
+    - _要件: パフォーマンス要件（1000件/1秒）_
+
+  - [ ] TASK-015.2: 接続プール設定
+    - HikariCPの設定
+    - 最大接続数の調整
+    - _要件: パフォーマンス要件（同時接続100ユーザー）_
+
+  - [ ] TASK-015.3: アプリケーション起動最適化
+    - 不要なBean除外
+    - 遅延初期化の設定
+    - _要件: パフォーマンス要件（起動30秒以内）_
+
+## 最終統合とデプロイ
+
+- [ ] TASK-016: 統合テストと本番準備
+  - 全機能の統合テスト
+  - ビルドとパッケージング
+  - デプロイメント準備
+  - _要件: 全要件の統合確認_
+
+  - [ ] TASK-016.1: 統合テストの実施
+    - 全エンドポイントの動作確認
+    - 画面遷移の確認
+    - エラーハンドリングの確認
+    - _要件: 全要件_
+
+  - [ ] TASK-016.2: 実行可能JARの作成
+    - mvn clean packageの実行
+    - JARファイルの動作確認
+    - _要件: 要件11_
+
+  - [ ] TASK-016.3: 本番環境設定の確認
+    - application-prod.propertiesの設定
+    - ログ設定の確認
+    - データベースファイルパスの設定
+    - _要件: 要件8（本番環境）_
+
+  - [ ] TASK-016.4: ドキュメント作成
+    - README.mdの作成
+    - API仕様書の作成
+    - デプロイ手順書の作成
+    - _要件: 要件11_
