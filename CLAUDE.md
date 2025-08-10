@@ -108,17 +108,17 @@ Use the Task tool to invoke specialized agents:
 # Requirements definition
 Task: aidd-step01-requirements
 Input: Initial specifications, system overview
-Output: docs/specs/{system-name}/requirements.md
+Output: docs/specs/{project}/requirements.md
 
 # System design  
 Task: aidd-step02-design
 Input: requirements.md file path
-Output: docs/specs/{system-name}/design.md
+Output: docs/specs/{project}/design.md
 
 # Implementation planning
 Task: aidd-step03-task-plan
 Input: design.md file path  
-Output: docs/specs/{system-name}/tasks.md
+Output: docs/specs/{project}/tasks.md
 
 # Code implementation
 Task: aidd-step04-implementation
