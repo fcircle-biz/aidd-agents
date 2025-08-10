@@ -3,7 +3,7 @@ package com.example.todoapp.security;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureTestMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - SQL injection protection (verified through repository tests)
  */
 @SpringBootTest
-@AutoConfigureTestMockMvc
+@AutoConfigureWebMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DisplayName("Security Configuration Tests")
 class SecurityConfigurationTest {

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureTestMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - Safe handling of user inputs in database queries
  */
 @SpringBootTest
-@AutoConfigureTestMockMvc
+@AutoConfigureWebMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DisplayName("SQL Injection Protection Tests")
 @Transactional
@@ -50,21 +50,19 @@ class SqlInjectionProtectionTest {
         todoRepository.deleteAll();
         
         // Create some test todos
-        Todo todo1 = Todo.builder()
-                .title("Test Todo 1")
-                .description("Description 1")
-                .status(TodoStatus.TODO)
-                .priority(TodoPriority.HIGH)
-                .dueDate(LocalDate.now().plusDays(7))
-                .build();
+        Todo todo1 = new Todo();
+        todo1.setTitle("Test Todo 1");
+        todo1.setDescription("Description 1");
+        todo1.setStatus(TodoStatus.TODO);
+        todo1.setPriority(TodoPriority.HIGH);
+        todo1.setDueDate(LocalDate.now().plusDays(7));
         
-        Todo todo2 = Todo.builder()
-                .title("Test Todo 2")
-                .description("Description 2")
-                .status(TodoStatus.IN_PROGRESS)
-                .priority(TodoPriority.MEDIUM)
-                .dueDate(LocalDate.now().plusDays(3))
-                .build();
+        Todo todo2 = new Todo();
+        todo2.setTitle("Test Todo 2");
+        todo2.setDescription("Description 2");
+        todo2.setStatus(TodoStatus.IN_PROGRESS);
+        todo2.setPriority(TodoPriority.MEDIUM);
+        todo2.setDueDate(LocalDate.now().plusDays(3));
         
         todoRepository.save(todo1);
         todoRepository.save(todo2);

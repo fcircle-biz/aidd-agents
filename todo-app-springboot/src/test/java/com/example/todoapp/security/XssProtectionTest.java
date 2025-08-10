@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureTestMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - Input sanitization
  */
 @SpringBootTest
-@AutoConfigureTestMockMvc
+@AutoConfigureWebMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @DisplayName("XSS Protection Tests")
 @Transactional
@@ -51,12 +51,11 @@ class XssProtectionTest {
         // Clear existing data and create test data with potential XSS content
         todoRepository.deleteAll();
         
-        testTodoWithXss = Todo.builder()
-                .title("<script>alert('XSS in title')</script>")
-                .description("<img src=x onerror=alert('XSS in description')>")
-                .status(TodoStatus.TODO)
-                .priority(TodoPriority.HIGH)
-                .build();
+        testTodoWithXss = new Todo();
+        testTodoWithXss.setTitle("<script>alert('XSS in title')</script>");
+        testTodoWithXss.setDescription("<img src=x onerror=alert('XSS in description')>");
+        testTodoWithXss.setStatus(TodoStatus.TODO);
+        testTodoWithXss.setPriority(TodoPriority.HIGH);
         testTodoWithXss = todoRepository.save(testTodoWithXss);
     }
 
@@ -168,12 +167,11 @@ class XssProtectionTest {
         };
 
         for (String payload : xssPayloads) {
-            Todo xssTodo = Todo.builder()
-                    .title("Safe Title")
-                    .description(payload)
-                    .status(TodoStatus.TODO)
-                    .priority(TodoPriority.LOW)
-                    .build();
+            Todo xssTodo = new Todo();
+            xssTodo.setTitle("Safe Title");
+            xssTodo.setDescription(payload);
+            xssTodo.setStatus(TodoStatus.TODO);
+            xssTodo.setPriority(TodoPriority.LOW);
             xssTodo = todoRepository.save(xssTodo);
 
             mockMvc.perform(get("/todos/" + xssTodo.getId()))
@@ -202,12 +200,11 @@ class XssProtectionTest {
     @DisplayName("Should maintain content integrity while escaping XSS")
     void shouldMaintainContentIntegrityWhileEscaping() throws Exception {
         // Test that legitimate HTML-like content in descriptions is preserved but escaped
-        Todo htmlContentTodo = Todo.builder()
-                .title("HTML Content Test")
-                .description("This description contains <b>bold text</b> and <i>italic text</i>")
-                .status(TodoStatus.TODO)
-                .priority(TodoPriority.MEDIUM)
-                .build();
+        Todo htmlContentTodo = new Todo();
+        htmlContentTodo.setTitle("HTML Content Test");
+        htmlContentTodo.setDescription("This description contains <b>bold text</b> and <i>italic text</i>");
+        htmlContentTodo.setStatus(TodoStatus.TODO);
+        htmlContentTodo.setPriority(TodoPriority.MEDIUM);
         htmlContentTodo = todoRepository.save(htmlContentTodo);
 
         mockMvc.perform(get("/todos/" + htmlContentTodo.getId()))

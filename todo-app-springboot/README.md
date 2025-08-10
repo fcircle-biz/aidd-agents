@@ -130,6 +130,192 @@ GET    /admin/logging/info                - ログ設定情報取得
 - [x] 包括的ログシステムの実装 (TASK-011)
 - [x] 開発環境最適化の実装 (TASK-012)
 - [x] パフォーマンスチューニングの実装 (TASK-014)
+- [x] 最終統合テストとプロダクション準備 (TASK-015)
+
+## 統合テスト
+
+### テスト実行
+
+```bash
+# 全てのテストを実行
+mvn test
+
+# 統合テストのみ実行
+mvn test -Dtest="*IntegrationTest"
+
+# エンドツーエンドテストのみ実行  
+mvn test -Dtest="CompleteEndToEndIntegrationTest"
+
+# システム統合テストのみ実行
+mvn test -Dtest="SystemIntegrationTest"
+
+# 特定のプロファイルでテスト実行
+mvn test -Dspring.profiles.active=test
+```
+
+### テストカバレッジ
+
+アプリケーションには包括的なテストスイートが含まれています：
+
+- **単体テスト**: 各コンポーネント（Service、Repository、Controller）の個別機能テスト
+- **統合テスト**: レイヤー間の連携テスト
+- **エンドツーエンドテスト**: 完全なユーザーワークフローテスト
+- **システム統合テスト**: 実際のHTTPサーバーを使用したフルシステムテスト
+- **パフォーマンステスト**: キャッシュ、同時実行、レスポンス時間のテスト
+- **セキュリティテスト**: SQL インジェクション、XSS 保護のテスト
+
+## プロダクション デプロイメント
+
+### Docker による本番環境デプロイ
+
+#### 前提条件
+- Docker Engine 20.10+
+- Docker Compose 2.0+
+- 4GB RAM 以上
+- 10GB ディスク容量
+
+#### クイックスタート
+
+```bash
+# リポジトリをクローン
+git clone <repository-url>
+cd todo-app-springboot
+
+# プロダクション環境で起動
+docker-compose up -d
+
+# ログ確認
+docker-compose logs -f todo-app
+
+# 健全性確認
+curl http://localhost:8080/actuator/health/production
+```
+
+#### アクセス先（本番環境）
+
+- **アプリケーション**: http://localhost:8080
+- **監視ダッシュボード（Grafana）**: http://localhost:3000 (admin/admin123)
+- **メトリクス（Prometheus）**: http://localhost:9090
+- **ヘルスチェック**: http://localhost:8080/actuator/health/production
+
+### 本番環境設定
+
+#### 環境変数設定
+
+```bash
+# 本番環境用 .env ファイル作成
+cat > .env << EOF
+SPRING_PROFILES_ACTIVE=prod
+JAVA_OPTS=-Xms1g -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+VCS_REF=$(git rev-parse --short HEAD)
+EOF
+```
+
+#### JVM チューニング
+
+```bash
+# 本番環境推奨JVM設定
+JAVA_OPTS="-Xms1g -Xmx2g \
+           -XX:+UseG1GC \
+           -XX:MaxGCPauseMillis=200 \
+           -XX:+HeapDumpOnOutOfMemoryError \
+           -XX:HeapDumpPath=/app/logs/heapdump.hprof"
+```
+
+### 監視とメトリクス
+
+#### Prometheus メトリクス
+
+- アプリケーションメトリクス: `/actuator/prometheus`
+- JVM メトリクス: メモリ、GC、スレッド
+- HTTP リクエストメトリクス: レスポンス時間、ステータスコード
+- データベースメトリクス: コネクションプール、クエリパフォーマンス
+
+#### Grafana ダッシュボード
+
+自動的に設定される監視ダッシュボード：
+- アプリケーション概要
+- JVM パフォーマンス
+- HTTP リクエストメトリクス
+- データベースパフォーマンス
+- システムリソース
+
+#### ヘルスチェック
+
+- **メインヘルス**: `/actuator/health`
+- **プロダクションヘルス**: `/actuator/health/production`
+- **データベースヘルス**: `/actuator/health/db`
+- **ディスク容量**: `/actuator/health/diskSpace`
+
+### バックアップとリカバリ
+
+#### データベースバックアップ
+
+```bash
+# バックアップディレクトリ作成
+mkdir -p backups
+
+# H2データベースバックアップ
+docker exec todo-app-prod cp /app/data/tododb.mv.db /tmp/
+docker cp todo-app-prod:/tmp/tododb.mv.db backups/tododb-$(date +%Y%m%d-%H%M%S).mv.db
+```
+
+#### ログバックアップ
+
+```bash
+# ログバックアップ
+docker cp todo-app-prod:/app/logs backups/logs-$(date +%Y%m%d-%H%M%S)
+```
+
+### トラブルシューティング
+
+#### 一般的な問題の解決
+
+```bash
+# コンテナログ確認
+docker-compose logs todo-app
+
+# ヘルスステータス確認
+curl http://localhost:8080/actuator/health
+
+# パフォーマンスメトリクス確認
+curl http://localhost:8080/dev/performance/report
+
+# メモリ使用量確認
+docker stats todo-app-prod
+```
+
+#### デバッグモード
+
+```bash
+# デバッグログ有効化
+docker-compose exec todo-app java -jar app.jar --logging.level.com.example.todoapp=DEBUG
+```
+
+### セキュリティ設定
+
+本番環境では以下のセキュリティ機能が有効です：
+
+- CSRF保護
+- SQLインジェクション対策
+- XSS保護
+- セキュリティヘッダー設定
+- Actuatorエンドポイントの保護
+
+### パフォーマンス最適化
+
+本番環境では以下の最適化が適用されています：
+
+- **データベース**: HikariCP コネクションプール、インデックス最適化
+- **キャッシュ**: Caffeine による多層キャッシュ
+- **HTTP**: gzip圧縮、HTTP/2サポート
+- **非同期処理**: バックグラウンドタスクの非同期実行
+- **監視**: リアルタイムパフォーマンス監視
+
+### 詳細なデプロイメント情報
+
+詳細なプロダクション デプロイメント手順については、[deployment-guide.md](deployment-guide.md) を参照してください。
 
 ## ライセンス
 
