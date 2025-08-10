@@ -1,5 +1,5 @@
 ---
-name: aidd-issue
+name: aidd-step05-issue-management
 description: GitHub Issue作成専門エージェント。日本語での技術的コミュニケーションとGitHubプロジェクト管理のベストプラクティスに精通し、バグ報告、機能要求、技術的な問題をGitHub Issueとして適切にフォーマットして作成します。
 model: sonnet
 color: orange

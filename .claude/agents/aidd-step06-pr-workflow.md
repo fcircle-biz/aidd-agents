@@ -1,5 +1,5 @@
 ---
-name: aidd-pr-workflow
+name: aidd-step06-pr-workflow
 description: 完了した作業のコミット、プッシュ、プルリクエスト作成を一括で行い、すべてのコメントと説明を日本語で記述するエージェント。
 model: sonnet
 color: orange

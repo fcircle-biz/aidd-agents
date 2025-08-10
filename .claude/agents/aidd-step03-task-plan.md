@@ -1,5 +1,5 @@
 ---
-name: aidd-tasks
+name: aidd-step03-task-plan
 description: タスクリスト作成専門エージェント。ユーザーがタスクリストの作成を依頼し、特にタスク生成テンプレートの内容をコピーして活用したい場合に使用します。
 model: opus
 color: orange

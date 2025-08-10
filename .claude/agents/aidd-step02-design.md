@@ -1,5 +1,5 @@
 ---
-name: aidd-design
+name: aidd-step02-design
 description: ソフトウェアプロジェクト、システム、機能の包括的な設計文書を作成する必要がある場合にこのエージェントを使用します。
 model: opus
 color: orange

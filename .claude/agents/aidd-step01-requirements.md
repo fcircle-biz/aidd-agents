@@ -1,5 +1,5 @@
 ---
-name: aidd-requirements
+name: aidd-step01-requirements
 description: 初期要件や仕様書に基づいて正式な要件定義書を作成する際に使用するエージェントです。
 model: opus
 color: orange
