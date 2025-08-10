@@ -59,25 +59,26 @@
 
 ## データアクセス層
 
-- [ ] TASK-003: リポジトリ層の実装
+- [x] TASK-003: リポジトリ層の実装
   - Spring Data JPAリポジトリの作成
   - カスタムクエリメソッドの実装
   - ページング・ソート機能の実装
   - _要件: 要件8（JPA使用）_
+  - **実装ノート**: TodoRepositoryインターフェース完全実装完了。JpaRepository継承による基本CRUD操作、カスタムクエリメソッド（findByStatus, findByTitleContainingOrDescriptionContaining, findByDueDateBefore等）、ページング対応メソッド、@Queryを使用した複合検索機能を実装。Spring Data JPA機能を最大活用し、要件6（検索機能）、要件2（降順ソート）、要件8（JPA使用）に完全対応。アプリケーション起動テスト成功確認済み。
 
-  - [ ] TASK-003.1: TodoRepositoryインターフェースの作成
+  - [x] TASK-003.1: TodoRepositoryインターフェースの作成
     - com.example.todoapp.repository.TodoRepository.javaの作成
     - JpaRepositoryの継承
     - 基本CRUD操作の自動実装
     - _要件: 要件8_
   
-  - [ ] TASK-003.2: カスタムクエリメソッドの実装
+  - [x] TASK-003.2: カスタムクエリメソッドの実装
     - findByStatus(TodoStatus status)メソッドの定義
     - findByTitleContainingOrDescriptionContaining()メソッドの定義
     - findByDueDateBefore(LocalDate date)メソッドの定義
     - _要件: 要件6（検索機能）_
 
-  - [ ] TASK-003.3: ページング対応クエリの実装
+  - [x] TASK-003.3: ページング対応クエリの実装
     - Page<Todo> findAll(Pageable pageable)の実装
     - ソート機能の統合
     - _要件: 要件2（一覧表示の降順ソート）_
