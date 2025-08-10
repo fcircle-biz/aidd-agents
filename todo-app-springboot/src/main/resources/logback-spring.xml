@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Logback設定 - 複雑ログ設定復元版 -->
+    <springProfile name="default,dev">
+        <!-- 開発環境用設定 -->
+        <property name="LOG_LEVEL" value="INFO"/>
+        <property name="LOG_PATH" value="logs"/>
+        <property name="LOG_PATTERN" 
+                  value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{correlationId:-}] %logger{36} - %msg%n"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <!-- 本番環境用設定 -->
+        <property name="LOG_LEVEL" value="WARN"/>
+        <property name="LOG_PATH" value="/app/logs"/>
+        <property name="LOG_PATTERN" 
+                  value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%X{correlationId:-}] %logger{36} - %msg%n"/>
+    </springProfile>
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Main Application Log File -->
+    <appender name="APPLICATION_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/todo-app.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/todo-app-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Error Log File -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/todo-app-error.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/todo-app-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Audit Log File -->
+    <appender name="AUDIT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/audit.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{correlationId:-}] %X{userId:-} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/audit-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Performance Log File -->
+    <appender name="PERFORMANCE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/performance.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%X{correlationId:-}] - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/performance-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Async Appender for Main Application -->
+    <appender name="ASYNC_APPLICATION" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="APPLICATION_FILE"/>
+        <queueSize>1024</queueSize>
+        <discardingThreshold>20</discardingThreshold>
+        <maxFlushTime>2000</maxFlushTime>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <!-- Async Appender for Error Logs -->
+    <appender name="ASYNC_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="ERROR_FILE"/>
+        <queueSize>256</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <maxFlushTime>1000</maxFlushTime>
+        <neverBlock>false</neverBlock>
+    </appender>
+
+    <!-- Special Loggers -->
+    <logger name="audit" level="INFO" additivity="false">
+        <appender-ref ref="AUDIT_FILE"/>
+    </logger>
+
+    <logger name="performance" level="INFO" additivity="false">
+        <appender-ref ref="PERFORMANCE_FILE"/>
+    </logger>
+
+    <!-- Application Package Loggers -->
+    <logger name="com.example.todoapp" level="INFO"/>
+    
+    <!-- Framework Loggers - Less verbose -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.apache" level="WARN"/>
+    <logger name="ch.qos.logback" level="WARN"/>
+
+    <!-- Database Connection Pool -->
+    <logger name="com.zaxxer.hikari" level="INFO"/>
+
+    <!-- Root Logger Configuration -->
+    <springProfile name="default,dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_APPLICATION"/>
+            <appender-ref ref="ASYNC_ERROR"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="WARN">
+            <appender-ref ref="ASYNC_APPLICATION"/>
+            <appender-ref ref="ASYNC_ERROR"/>
+        </root>
+    </springProfile>
+
+    <!-- Test Profile - Console only -->
+    <springProfile name="test">
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>
