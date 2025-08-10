@@ -85,28 +85,29 @@
 
 ## DTOとマッパー
 
-- [ ] TASK-004: データ転送オブジェクトとマッパーの実装
+- [x] TASK-004: データ転送オブジェクトとマッパーの実装
   - リクエスト/レスポンスDTOの作成
   - エンティティとDTOの変換ユーティリティ
   - 検索条件DTOの実装
   - _要件: 要件7（API仕様）_
+  - **実装ノート**: 完全なDTOとマッパー実装完了。TodoRequest（バリデーション付き）、TodoResponse（JSON形式対応）、TodoSearchCriteria（検索条件）、TodoMapperユーティリティクラスを実装。Bean ValidationアノテーションによるInput検証、Jackson形式でのJSON応答対応、エンティティ⇄DTO変換の完全対応。要件1（バリデーション）、要件4（バリデーション）、要件6（検索条件）、要件7（API仕様）に完全対応。アプリケーション起動テスト成功確認済み。
 
-  - [ ] TASK-004.1: TodoRequest DTOの作成
+  - [x] TASK-004.1: TodoRequest DTOの作成
     - com.example.todoapp.dto.TodoRequest.javaの作成
     - バリデーションアノテーション（@NotBlank, @Size）の追加
     - フィールド定義（title, description, status, priority, dueDate）
     - _要件: 要件1（バリデーション）, 要件4（バリデーション）_
 
-  - [ ] TASK-004.2: TodoResponse DTOの作成
+  - [x] TASK-004.2: TodoResponse DTOの作成
     - com.example.todoapp.dto.TodoResponse.javaの作成
     - APIレスポンス用フィールド定義
     - _要件: 要件7（JSON形式レスポンス）_
 
-  - [ ] TASK-004.3: TodoSearchCriteria DTOの作成
+  - [x] TASK-004.3: TodoSearchCriteria DTOの作成
     - 検索条件フィールド（keyword, status, priority）の定義
     - _要件: 要件6（検索条件）_
 
-  - [ ] TASK-004.4: TodoMapperユーティリティの作成
+  - [x] TASK-004.4: TodoMapperユーティリティの作成
     - com.example.todoapp.util.TodoMapper.javaの作成
     - エンティティからDTOへの変換メソッド
     - DTOからエンティティへの変換メソッド
