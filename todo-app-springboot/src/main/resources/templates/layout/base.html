@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="|${pageTitle} - Todo管理システム|">Todo管理システム</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Todo管理システム</h1>
+        <ul>
+            <li><a th:href="@{/todos}" th:class="${activeMenu == 'list'} ? 'active' : ''">一覧</a></li>
+            <li><a th:href="@{/todos/new}" th:class="${activeMenu == 'create'} ? 'active' : ''">新規作成</a></li>
+            <li><a th:href="@{/todos/search}" th:class="${activeMenu == 'search'} ? 'active' : ''">検索</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Flash Messages -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+        <div th:if="${warningMessage}" class="alert alert-warning" th:text="${warningMessage}"></div>
+        <div th:if="${infoMessage}" class="alert alert-info" th:text="${infoMessage}"></div>
+
+        <!-- Page Content -->
+        <div layout:fragment="content">
+            <!-- Page specific content will be inserted here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Todo管理システム. All rights reserved.</p>
+    </footer>
+
+    <!-- Page specific scripts -->
+    <div layout:fragment="scripts">
+        <!-- Page specific scripts will be inserted here -->
+    </div>
+</body>
+</html>

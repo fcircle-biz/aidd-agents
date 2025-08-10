@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>開発環境エラーページ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .error-info {
+            background-color: #3d3d3d;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .error-info h3 {
+            margin-top: 0;
+            color: #ffc107;
+        }
+        .stack-trace {
+            background-color: #000;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .debug-section {
+            background-color: #3d3d3d;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .debug-section h4 {
+            margin-top: 0;
+            color: #17a2b8;
+        }
+        .debug-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .debug-list li {
+            background-color: #2d2d2d;
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 4px;
+            border-left: 3px solid #6c757d;
+        }
+        .debug-actions {
+            background-color: #495057;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .debug-actions h4 {
+            margin-top: 0;
+            color: #28a745;
+        }
+        .action-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 4px 8px 4px 0;
+            transition: background-color 0.3s;
+        }
+        .action-link:hover {
+            background-color: #0056b3;
+            text-decoration: none;
+            color: white;
+        }
+        .warning {
+            background-color: #856404;
+            border: 1px solid #ffc107;
+            color: #fff3cd;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .code {
+            background-color: #000;
+            color: #00ff00;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .timestamp {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚨 開発環境エラーページ</h1>
+            <p>このページは開発環境でのみ表示されます。詳細なデバッグ情報を提供しています。</p>
+        </div>
+
+        <div class="error-info">
+            <h3>エラー概要</h3>
+            <p><strong>ステータス:</strong> <span th:text="${status}">500</span></p>
+            <p><strong>エラータイプ:</strong> <span th:text="${error}">Internal Server Error</span></p>
+            <p><strong>メッセージ:</strong> <span th:text="${message}">予期しないエラーが発生しました</span></p>
+            <p><strong>パス:</strong> <code class="code" th:text="${path}">/api/todos</code></p>
+            <p><strong>発生日時:</strong> <span th:text="${timestamp}">2024-01-01 12:00:00</span></p>
+        </div>
+
+        <div class="debug-section" th:if="${exception}">
+            <h4>📋 例外詳細</h4>
+            <p><strong>例外クラス:</strong> <code class="code" th:text="${exception.class.simpleName}">RuntimeException</code></p>
+            <p><strong>例外メッセージ:</strong> <span th:text="${exception.message}">例外が発生しました</span></p>
+            
+            <div class="stack-trace" th:if="${trace}">
+                <strong>スタックトレース:</strong>
+                <span th:text="${trace}">スタックトレースが表示されます</span>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h4>🔍 デバッグヒント</h4>
+            <ul class="debug-list">
+                <li><strong>HTTP 400 (Bad Request):</strong> リクエストデータの形式や必須フィールドを確認してください</li>
+                <li><strong>HTTP 404 (Not Found):</strong> URLパスやリソースIDが正しいか確認してください</li>
+                <li><strong>HTTP 500 (Internal Server Error):</strong> サーバーログを確認し、データベース接続や設定を点検してください</li>
+                <li><strong>バリデーションエラー:</strong> 入力データが要件を満たしているか確認してください</li>
+                <li><strong>データベースエラー:</strong> H2コンソールでデータベースの状態を確認してください</li>
+            </ul>
+        </div>
+
+        <div class="debug-section">
+            <h4>🌐 リクエスト情報</h4>
+            <ul class="debug-list">
+                <li><strong>メソッド:</strong> <span th:text="${method}">GET</span></li>
+                <li><strong>URL:</strong> <code class="code" th:text="${url}">http://localhost:8080/api/todos</code></li>
+                <li><strong>ユーザーエージェント:</strong> <span th:text="${userAgent}">Mozilla/5.0...</span></li>
+                <li><strong>IPアドレス:</strong> <span th:text="${clientIP}">127.0.0.1</span></li>
+            </ul>
+        </div>
+
+        <div class="debug-actions">
+            <h4>🛠️ デバッグアクション</h4>
+            <a href="/h2-console" class="action-link" target="_blank">H2データベースコンソール</a>
+            <a href="/dev/actuator/health" class="action-link" target="_blank">アプリケーション健全性チェック</a>
+            <a href="/dev/monitor/jvm" class="action-link" target="_blank">JVMメトリクス</a>
+            <a href="/dev/diagnostics/health-check" class="action-link" target="_blank">システム診断</a>
+            <a href="/dev/api-docs/overview" class="action-link" target="_blank">API ドキュメント</a>
+            <a href="/todos" class="action-link">Todo一覧に戻る</a>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ 重要な注意事項:</strong>
+            このエラーページは開発環境でのみ表示されます。本番環境では、セキュリティのため詳細なエラー情報は表示されません。
+            実際のアプリケーションでは、ログファイルを確認してエラーの詳細を調査してください。
+        </div>
+
+        <div class="timestamp">
+            このエラーページは開発環境最適化機能 (TASK-012) の一部として生成されました。
+        </div>
+    </div>
+</body>
+</html>

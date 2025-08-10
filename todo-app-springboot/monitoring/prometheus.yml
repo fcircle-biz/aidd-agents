@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+scrape_configs:
+  # Todo Application metrics
+  - job_name: 'todo-app'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['todo-app:8080']
+    scrape_timeout: 10s
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Additional monitoring targets can be added here
+  # Example for external database monitoring:
+  # - job_name: 'database'
+  #   static_configs:
+  #     - targets: ['database:9104']
