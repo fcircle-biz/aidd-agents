@@ -2,24 +2,25 @@
 
 ## プロジェクト基盤
 
-- [ ] TASK-001: プロジェクト構造とコア設定の作成
+- [x] TASK-001: プロジェクト構造とコア設定の作成
   - Spring Initializrを使用してプロジェクトを生成
   - 必要な依存関係（Web, Data JPA, H2, Thymeleaf, Validation, DevTools）を追加
   - プロジェクトディレクトリ構造（controller, service, repository, entity, dto, exception, config）の作成
   - _要件: 要件11（開発環境セットアップ）_
+  - **実装ノート**: 完全なMavenプロジェクト構造を作成。Spring Boot 3.x、Java 17設定完了。全パッケージ構造と設定ファイルを配置済み。
 
-  - [ ] TASK-001.1: Mavenプロジェクトの初期化
+  - [x] TASK-001.1: Mavenプロジェクトの初期化
     - pom.xmlへの依存関係追加（Spring Boot 3.x, Java 17）
     - Spring Boot Starter Parent設定
     - _要件: 要件11_
   
-  - [ ] TASK-001.2: アプリケーション設定ファイルの作成
+  - [x] TASK-001.2: アプリケーション設定ファイルの作成
     - application.propertiesの作成（ポート設定、コンテキストパス）
     - application-dev.properties（開発環境設定）
     - application-prod.properties（本番環境設定）
     - _要件: 要件11_
 
-  - [ ] TASK-001.3: メインアプリケーションクラスの作成
+  - [x] TASK-001.3: メインアプリケーションクラスの作成
     - TodoApplication.javaの作成（@SpringBootApplication）
     - メインメソッドの実装
     - _要件: 要件11_
