@@ -138,7 +138,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
      * @param endDate 検索終了日時
      * @return 指定期間に作成されたTodo一覧
      */
-    @Query("SELECT t FROM Todo t WHERE t.createdAt >= :startDate AND t.createdAt <= :endDate ORDER BY t.createdAt DESC")
+    @Query("SELECT t FROM Todo t WHERE CAST(t.createdAt AS date) >= :startDate AND CAST(t.createdAt AS date) <= :endDate ORDER BY t.createdAt DESC")
     List<Todo> findByCreatedAtBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
     
     /**
@@ -150,7 +150,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
      * @param status 検索対象のステータス
      * @return 複合条件に一致するTodo一覧
      */
-    List<Todo> findByTitleContainingOrDescriptionContainingAndStatus(String title, String description, TodoStatus status);
+    @Query("SELECT t FROM Todo t WHERE (t.title LIKE %:title% OR t.description LIKE %:description%) AND t.status = :status")
+    List<Todo> findByTitleContainingOrDescriptionContainingAndStatus(@Param("title") String title, @Param("description") String description, @Param("status") TodoStatus status);
     
     /**
      * 期限切れかつ指定ステータス以外のTodo検索

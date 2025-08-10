@@ -2,6 +2,8 @@ package com.example.todoapp.dto;
 
 import com.example.todoapp.entity.TodoPriority;
 import com.example.todoapp.entity.TodoStatus;
+import com.example.todoapp.validation.NotPastDate;
+import com.example.todoapp.validation.ValidationGroups;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -18,14 +20,14 @@ public class TodoRequest {
     /**
      * タイトル（必須、100文字以内）
      */
-    @NotBlank(message = "タイトルは必須項目です")
-    @Size(max = 100, message = "タイトルは100文字以内で入力してください")
+    @NotBlank(message = "タイトルは必須項目です", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Size(max = 100, message = "タイトルは100文字以内で入力してください", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     private String title;
     
     /**
      * 説明（任意、500文字以内）
      */
-    @Size(max = 500, message = "説明は500文字以内で入力してください")
+    @Size(max = 500, message = "説明は500文字以内で入力してください", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     private String description;
     
     /**
@@ -41,6 +43,7 @@ public class TodoRequest {
     /**
      * 期限（任意）
      */
+    @NotPastDate(message = "期限は今日以降の日付を指定してください", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     private LocalDate dueDate;
     
     /**

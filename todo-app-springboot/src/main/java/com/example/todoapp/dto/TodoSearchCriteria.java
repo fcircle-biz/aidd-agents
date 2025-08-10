@@ -2,6 +2,9 @@ package com.example.todoapp.dto;
 
 import com.example.todoapp.entity.TodoPriority;
 import com.example.todoapp.entity.TodoStatus;
+import com.example.todoapp.validation.ValidDateRange;
+import com.example.todoapp.validation.ValidationGroups;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -12,11 +15,14 @@ import java.util.Objects;
  * 
  * @author System
  */
+@ValidDateRange(from = "dueDateFrom", to = "dueDateTo", message = "期限開始日は期限終了日より前である必要があります", groups = ValidationGroups.Search.class)
+@ValidDateRange(from = "createdFrom", to = "createdTo", message = "作成日開始日は作成日終了日より前である必要があります", groups = ValidationGroups.Search.class)
 public class TodoSearchCriteria {
     
     /**
      * キーワード検索（タイトル・説明に対する部分一致検索）
      */
+    @Size(max = 100, message = "検索キーワードは100文字以内で入力してください", groups = ValidationGroups.Search.class)
     private String keyword;
     
     /**

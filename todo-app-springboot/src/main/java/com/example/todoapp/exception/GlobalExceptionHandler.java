@@ -10,7 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -84,6 +87,15 @@ public class GlobalExceptionHandler {
             ));
         }
         
+        // クラスレベルのバリデーションエラー（カスタムバリデーションなど）も含める
+        for (ObjectError globalError : e.getBindingResult().getGlobalErrors()) {
+            fieldErrors.add(new ErrorResponse.FieldError(
+                globalError.getObjectName(),
+                null,
+                globalError.getDefaultMessage()
+            ));
+        }
+        
         ErrorResponse errorResponse = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "バリデーションエラーが発生しました",
@@ -115,6 +127,35 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "入力値にエラーがあります",
+            fieldErrors
+        );
+        errorResponse.setPath(getRequestURI());
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    
+    /**
+     * 制約違反例外の処理（Bean Validation）
+     * 400 Bad Request を返却
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        logger.warn("Constraint violation error occurred: {}", e.getMessage());
+        
+        List<ErrorResponse.FieldError> fieldErrors = new ArrayList<>();
+        
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            String fieldName = violation.getPropertyPath().toString();
+            fieldErrors.add(new ErrorResponse.FieldError(
+                fieldName,
+                violation.getInvalidValue(),
+                violation.getMessage()
+            ));
+        }
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "バリデーション制約エラーが発生しました",
             fieldErrors
         );
         errorResponse.setPath(getRequestURI());

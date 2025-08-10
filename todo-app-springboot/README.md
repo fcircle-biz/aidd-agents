@@ -79,9 +79,11 @@ java -jar target/todo-app-1.0.0.jar
 - Web UI: http://localhost:8080/todos
 - H2 Console: http://localhost:8080/h2-console
 - REST API: http://localhost:8080/api/todos
+- Log Management API: http://localhost:8080/admin/logging/levels
 
 ## API エンドポイント
 
+### Todo API
 ```
 GET    /api/todos          - Todo一覧取得
 GET    /api/todos/{id}     - Todo詳細取得
@@ -89,6 +91,15 @@ POST   /api/todos          - Todo作成
 PUT    /api/todos/{id}     - Todo更新
 DELETE /api/todos/{id}     - Todo削除
 GET    /api/todos/search   - Todo検索
+```
+
+### Log Management API
+```
+GET    /admin/logging/levels              - ログレベル一覧取得
+PUT    /admin/logging/levels/{logger}     - 個別ログレベル変更
+PUT    /admin/logging/levels              - 一括ログレベル変更
+POST   /admin/logging/reset               - ログレベルリセット
+GET    /admin/logging/info                - ログ設定情報取得
 ```
 
 ## 画面構成
@@ -112,7 +123,9 @@ GET    /api/todos/search   - Todo検索
 - [x] 例外処理とエラーハンドリングの実装 (TASK-006)
 - [x] REST APIコントローラーの実装 (TASK-007)
 - [x] Webコントローラーの実装 (TASK-008)
-- [ ] テスト実装 (TASK-009+)
+- [x] テストスイートの実装 (TASK-009)
+- [x] バリデーション機能の実装 (TASK-010)
+- [x] 包括的ログシステムの実装 (TASK-011)
 
 ## ライセンス
 
