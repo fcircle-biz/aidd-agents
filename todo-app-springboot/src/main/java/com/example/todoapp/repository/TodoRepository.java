@@ -172,4 +172,14 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
      * @return 期限切れかつ指定ステータス以外のTodo一覧
      */
     List<Todo> findByDueDateBeforeAndStatusNot(LocalDate date, TodoStatus status);
+    
+    /**
+     * 期限切れかつ指定ステータス以外のTodo件数取得
+     * 期限切れで指定ステータス以外のTodo件数を取得
+     * 
+     * @param date 基準日
+     * @param status 除外するステータス
+     * @return 期限切れかつ指定ステータス以外のTodo件数
+     */
+    Long countByDueDateBeforeAndStatusNot(LocalDate date, TodoStatus status);
 }

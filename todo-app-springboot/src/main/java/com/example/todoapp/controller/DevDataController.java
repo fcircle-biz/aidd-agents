@@ -41,13 +41,13 @@ public class DevDataController {
         
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalTodos", todoRepository.count());
-        stats.put("completedTodos", todoRepository.countByStatus(TodoStatus.COMPLETED));
-        stats.put("pendingTodos", todoRepository.countByStatus(TodoStatus.PENDING));
+        stats.put("completedTodos", todoRepository.countByStatus(TodoStatus.DONE));
+        stats.put("pendingTodos", todoRepository.countByStatus(TodoStatus.TODO));
         stats.put("inProgressTodos", todoRepository.countByStatus(TodoStatus.IN_PROGRESS));
         stats.put("highPriorityTodos", todoRepository.countByPriority(TodoPriority.HIGH));
         stats.put("mediumPriorityTodos", todoRepository.countByPriority(TodoPriority.MEDIUM));
         stats.put("lowPriorityTodos", todoRepository.countByPriority(TodoPriority.LOW));
-        stats.put("overdueTodos", todoRepository.countByDueDateBeforeAndStatusNot(LocalDate.now(), TodoStatus.COMPLETED));
+        stats.put("overdueTodos", todoRepository.countByDueDateBeforeAndStatusNot(LocalDate.now(), TodoStatus.DONE));
         
         return ResponseEntity.ok(stats);
     }
@@ -142,7 +142,7 @@ public class DevDataController {
             todo.setTitle("期限切れタスク " + i);
             todo.setDescription("テスト用の期限切れタスクです。期限切れ機能の動作確認に使用されます。");
             todo.setPriority(TodoPriority.values()[(int)(Math.random() * TodoPriority.values().length)]);
-            todo.setStatus(TodoStatus.PENDING);
+            todo.setStatus(TodoStatus.TODO);
             todo.setDueDate(LocalDate.now().minusDays((int)(Math.random() * 10) + 1));
             todo.setCreatedAt(LocalDateTime.now().minusDays((int)(Math.random() * 15)));
             todo.setUpdatedAt(todo.getCreatedAt());
@@ -159,11 +159,11 @@ public class DevDataController {
 
     private void loadSampleTodos() {
         List<Todo> sampleTodos = Arrays.asList(
-            createTodo("開発環境テスト1", "開発環境での基本機能テスト", TodoPriority.MEDIUM, TodoStatus.PENDING, LocalDate.now().plusDays(3)),
+            createTodo("開発環境テスト1", "開発環境での基本機能テスト", TodoPriority.MEDIUM, TodoStatus.TODO, LocalDate.now().plusDays(3)),
             createTodo("開発環境テスト2", "API動作確認テスト", TodoPriority.HIGH, TodoStatus.IN_PROGRESS, LocalDate.now().plusDays(5)),
-            createTodo("開発環境テスト3", "UI表示確認テスト", TodoPriority.LOW, TodoStatus.COMPLETED, LocalDate.now().minusDays(1)),
-            createTodo("パフォーマンステスト", "システムパフォーマンスの測定と評価", TodoPriority.HIGH, TodoStatus.PENDING, LocalDate.now().plusDays(7)),
-            createTodo("セキュリティテスト", "セキュリティホール検査とペネトレーションテスト", TodoPriority.HIGH, TodoStatus.PENDING, LocalDate.now().plusDays(10))
+            createTodo("開発環境テスト3", "UI表示確認テスト", TodoPriority.LOW, TodoStatus.DONE, LocalDate.now().minusDays(1)),
+            createTodo("パフォーマンステスト", "システムパフォーマンスの測定と評価", TodoPriority.HIGH, TodoStatus.TODO, LocalDate.now().plusDays(7)),
+            createTodo("セキュリティテスト", "セキュリティホール検査とペネトレーションテスト", TodoPriority.HIGH, TodoStatus.TODO, LocalDate.now().plusDays(10))
         );
         
         todoRepository.saveAll(sampleTodos);

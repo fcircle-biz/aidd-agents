@@ -140,7 +140,7 @@ public class DevApiDocController {
         createRequest.setDescription("APIテスト用のサンプルタスクです");
         createRequest.setDueDate(LocalDate.now().plusDays(7));
         createRequest.setPriority(TodoPriority.HIGH);
-        createRequest.setStatus(TodoStatus.PENDING);
+        createRequest.setStatus(TodoStatus.TODO);
         createExample.put("body", createRequest);
         requestExamples.put("createTodo", createExample);
         
@@ -180,7 +180,7 @@ public class DevApiDocController {
         successResponse.setDescription("これはサンプルのタスクです");
         successResponse.setDueDate(LocalDate.now().plusDays(5));
         successResponse.setPriority(TodoPriority.MEDIUM);
-        successResponse.setStatus(TodoStatus.PENDING);
+        successResponse.setStatus(TodoStatus.TODO);
         responseExamples.put("successResponse", successResponse);
         
         // Error response example
@@ -217,7 +217,7 @@ public class DevApiDocController {
         request1.setDescription("緊急に対応が必要なタスクです");
         request1.setDueDate(LocalDate.now().plusDays(1));
         request1.setPriority(TodoPriority.HIGH);
-        request1.setStatus(TodoStatus.PENDING);
+        request1.setStatus(TodoStatus.TODO);
         sampleRequests.add(request1);
         
         TodoRequest request2 = new TodoRequest();
@@ -233,7 +233,7 @@ public class DevApiDocController {
         request3.setDescription("将来的に取り組む予定のプロジェクトです");
         request3.setDueDate(LocalDate.now().plusDays(30));
         request3.setPriority(TodoPriority.LOW);
-        request3.setStatus(TodoStatus.PENDING);
+        request3.setStatus(TodoStatus.TODO);
         sampleRequests.add(request3);
         
         testData.put("sampleRequests", sampleRequests);
@@ -243,7 +243,7 @@ public class DevApiDocController {
         
         TodoSearchCriteria search1 = new TodoSearchCriteria();
         search1.setKeyword("重要");
-        search1.setStatus(TodoStatus.PENDING);
+        search1.setStatus(TodoStatus.TODO);
         sampleSearches.add(search1);
         
         TodoSearchCriteria search2 = new TodoSearchCriteria();

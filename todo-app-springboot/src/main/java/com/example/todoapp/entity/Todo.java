@@ -14,7 +14,18 @@ import java.util.Objects;
  * @author System
  */
 @Entity
-@Table(name = "todo")
+@Table(name = "todo", 
+    indexes = {
+        @Index(name = "idx_todo_status", columnList = "status"),
+        @Index(name = "idx_todo_priority", columnList = "priority"),
+        @Index(name = "idx_todo_due_date", columnList = "due_date"),
+        @Index(name = "idx_todo_created_at", columnList = "created_at"),
+        @Index(name = "idx_todo_status_priority", columnList = "status, priority"),
+        @Index(name = "idx_todo_status_due_date", columnList = "status, due_date"),
+        @Index(name = "idx_todo_title_search", columnList = "title"),
+        @Index(name = "idx_todo_composite_search", columnList = "status, due_date, priority")
+    }
+)
 public class Todo {
     
     @Id

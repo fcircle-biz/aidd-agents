@@ -10,10 +10,14 @@ import com.example.todoapp.repository.TodoRepository;
 import com.example.todoapp.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.CompletableFuture;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,6 +43,7 @@ public class TodoServiceImpl implements TodoService {
     
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "todos", key = "#id")
     public Todo findById(Long id) {
         log.info("Finding todo by id: {}", id);
         return todoRepository.findById(id)
@@ -49,6 +54,7 @@ public class TodoServiceImpl implements TodoService {
     }
     
     @Override
+    @CacheEvict(value = {"todo-counts", "todo-search-results", "todo-statistics"}, allEntries = true)
     public Todo create(TodoRequest request) {
         log.info("Creating new todo with title: {}", request.getTitle());
         
@@ -71,6 +77,10 @@ public class TodoServiceImpl implements TodoService {
     }
     
     @Override
+    @Caching(evict = {
+        @CacheEvict(value = "todos", key = "#id"),
+        @CacheEvict(value = {"todo-counts", "todo-search-results", "todo-statistics"}, allEntries = true)
+    })
     public Todo update(Long id, TodoRequest request) {
         log.info("Updating todo with id: {}", id);
         
@@ -93,6 +103,10 @@ public class TodoServiceImpl implements TodoService {
     }
     
     @Override
+    @Caching(evict = {
+        @CacheEvict(value = "todos", key = "#id"),
+        @CacheEvict(value = {"todo-counts", "todo-search-results", "todo-statistics"}, allEntries = true)
+    })
     public void delete(Long id) {
         log.info("Deleting todo with id: {}", id);
         
@@ -108,6 +122,7 @@ public class TodoServiceImpl implements TodoService {
     
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "todo-search-results", key = "#criteria.toString()")
     public List<Todo> search(TodoSearchCriteria criteria) {
         log.info("Searching todos with criteria: {}", criteria);
         
@@ -132,6 +147,7 @@ public class TodoServiceImpl implements TodoService {
     
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "status-counts", key = "#status")
     public List<Todo> findByStatus(TodoStatus status) {
         log.info("Finding todos by status: {}", status);
         return todoRepository.findByStatus(status);
@@ -139,9 +155,60 @@ public class TodoServiceImpl implements TodoService {
     
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "overdue-todos", key = "'overdue-' + T(java.time.LocalDate).now().toString()")
     public List<Todo> findOverdueTodos() {
         log.info("Finding overdue todos");
         LocalDate today = LocalDate.now();
         return todoRepository.findByDueDateBeforeAndStatusNot(today, TodoStatus.DONE);
+    }
+    
+    /**
+     * Asynchronous method to preload commonly accessed data into cache
+     * This method runs in the background to warm up the cache
+     */
+    @Async
+    public CompletableFuture<Void> preloadCacheData() {
+        log.info("Starting cache preload operation");
+        
+        // Preload status counts
+        for (TodoStatus status : TodoStatus.values()) {
+            findByStatus(status);
+        }
+        
+        // Preload overdue todos
+        findOverdueTodos();
+        
+        log.info("Cache preload operation completed");
+        return CompletableFuture.completedFuture(null);
+    }
+    
+    /**
+     * Batch operation to process multiple todos efficiently
+     * Uses batch processing for better performance
+     */
+    @Async
+    public CompletableFuture<Void> batchUpdateStatus(List<Long> todoIds, TodoStatus newStatus) {
+        log.info("Starting batch status update for {} todos", todoIds.size());
+        
+        // Process in batches to avoid memory issues
+        int batchSize = 100;
+        for (int i = 0; i < todoIds.size(); i += batchSize) {
+            int endIndex = Math.min(i + batchSize, todoIds.size());
+            List<Long> batch = todoIds.subList(i, endIndex);
+            
+            for (Long id : batch) {
+                try {
+                    Todo todo = findById(id);
+                    todo.setStatus(newStatus);
+                    todo.setUpdatedAt(LocalDateTime.now());
+                    todoRepository.save(todo);
+                } catch (TodoNotFoundException e) {
+                    log.warn("Todo not found during batch update: {}", id);
+                }
+            }
+        }
+        
+        log.info("Batch status update completed for {} todos", todoIds.size());
+        return CompletableFuture.completedFuture(null);
     }
 }

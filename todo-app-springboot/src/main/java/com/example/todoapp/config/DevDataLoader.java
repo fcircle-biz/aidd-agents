@@ -56,35 +56,35 @@ public class DevDataLoader implements CommandLineRunner {
                 "データベース設計を確認する", 
                 "H2データベースのスキーマ設計を見直し、パフォーマンス最適化を検討する",
                 TodoPriority.MEDIUM,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().plusDays(3)
             ),
             createTodo(
                 "ユニットテストを追加する", 
                 "サービス層とコントローラー層の包括的なテストケースを作成する",
                 TodoPriority.HIGH,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().plusDays(5)
             ),
             createTodo(
                 "API ドキュメントを作成する", 
                 "REST APIの詳細なドキュメントを作成し、使用例を追加する",
                 TodoPriority.MEDIUM,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().plusDays(10)
             ),
             createTodo(
                 "ログイン機能の実装", 
                 "Spring Securityを使用したユーザー認証・認可機能を実装する",
                 TodoPriority.LOW,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().plusDays(14)
             ),
             createTodo(
                 "過去に完了したタスクのサンプル", 
                 "開発環境での過去の作業例として追加されたサンプルタスク",
                 TodoPriority.MEDIUM,
-                TodoStatus.COMPLETED,
+                TodoStatus.DONE,
                 LocalDate.now().minusDays(2)
             ),
             createTodo(
@@ -98,7 +98,7 @@ public class DevDataLoader implements CommandLineRunner {
                 "期限切れタスクのサンプル", 
                 "期限切れタスクの表示とソート機能のテスト用データ",
                 TodoPriority.MEDIUM,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().minusDays(1)
             ),
             createTodo(
@@ -107,7 +107,7 @@ public class DevDataLoader implements CommandLineRunner {
                 "このタスクは長期間にわたるプロジェクトの管理機能をテストするためのサンプルデータです。" +
                 "複数の段階に分けて進行し、定期的な進捗確認とマイルストーンの設定が必要になります。",
                 TodoPriority.LOW,
-                TodoStatus.PENDING,
+                TodoStatus.TODO,
                 LocalDate.now().plusDays(30)
             ),
             createTodo(

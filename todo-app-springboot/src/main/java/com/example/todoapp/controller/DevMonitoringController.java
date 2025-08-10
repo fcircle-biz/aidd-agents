@@ -98,8 +98,8 @@ public class DevMonitoringController {
             
             // Get request duration metrics if available
             try {
-                double avgDuration = meterRegistry.get("http.server.requests").timer().mean();
-                double maxDuration = meterRegistry.get("http.server.requests").timer().max();
+                double avgDuration = meterRegistry.get("http.server.requests").timer().mean(java.util.concurrent.TimeUnit.MILLISECONDS);
+                double maxDuration = meterRegistry.get("http.server.requests").timer().max(java.util.concurrent.TimeUnit.MILLISECONDS);
                 httpMetrics.put("avgResponseTime", avgDuration);
                 httpMetrics.put("maxResponseTime", maxDuration);
             } catch (Exception e) {
@@ -210,8 +210,8 @@ public class DevMonitoringController {
         try {
             // Database operation timing
             double dbOpCount = meterRegistry.get("dev.database.operations").timer().count();
-            double dbOpMean = meterRegistry.get("dev.database.operations").timer().mean();
-            double dbOpMax = meterRegistry.get("dev.database.operations").timer().max();
+            double dbOpMean = meterRegistry.get("dev.database.operations").timer().mean(java.util.concurrent.TimeUnit.MILLISECONDS);
+            double dbOpMax = meterRegistry.get("dev.database.operations").timer().max(java.util.concurrent.TimeUnit.MILLISECONDS);
             
             Map<String, Object> dbOps = new HashMap<>();
             dbOps.put("count", dbOpCount);
@@ -226,8 +226,8 @@ public class DevMonitoringController {
         try {
             // API response timing
             double apiCount = meterRegistry.get("dev.api.response").timer().count();
-            double apiMean = meterRegistry.get("dev.api.response").timer().mean();
-            double apiMax = meterRegistry.get("dev.api.response").timer().max();
+            double apiMean = meterRegistry.get("dev.api.response").timer().mean(java.util.concurrent.TimeUnit.MILLISECONDS);
+            double apiMax = meterRegistry.get("dev.api.response").timer().max(java.util.concurrent.TimeUnit.MILLISECONDS);
             
             Map<String, Object> apiOps = new HashMap<>();
             apiOps.put("count", apiCount);
@@ -242,8 +242,8 @@ public class DevMonitoringController {
         try {
             // Service operation timing
             double serviceCount = meterRegistry.get("dev.service.operations").timer().count();
-            double serviceMean = meterRegistry.get("dev.service.operations").timer().mean();
-            double serviceMax = meterRegistry.get("dev.service.operations").timer().max();
+            double serviceMean = meterRegistry.get("dev.service.operations").timer().mean(java.util.concurrent.TimeUnit.MILLISECONDS);
+            double serviceMax = meterRegistry.get("dev.service.operations").timer().max(java.util.concurrent.TimeUnit.MILLISECONDS);
             
             Map<String, Object> serviceOps = new HashMap<>();
             serviceOps.put("count", serviceCount);
