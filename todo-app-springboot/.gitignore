@@ -40,6 +40,9 @@ data/
 logs/
 *.log
 
+### Temporary files ###
+tmp/
+
 ### OS ###
 .DS_Store
 Thumbs.db

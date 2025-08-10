@@ -80,18 +80,14 @@
                             <a th:href="@{/todos/{id}(id=${todo.id})}" th:text="${todo.title}">Sample Todo</a>
                         </td>
                         <td>
-                            <span th:text="${todo.status.displayName}" 
-                                  th:class="|badge ${todo.status.name() == 'TODO'} ? 'badge-danger' : 
-                                           (${todo.status.name() == 'IN_PROGRESS'} ? 'badge-warning' : 'badge-success')|">
-                                未完了
-                            </span>
+                            <span th:if="${todo.status.toString() == 'TODO'}" th:text="${todo.status.getDisplayName()}" class="badge badge-danger"></span>
+                            <span th:if="${todo.status.toString() == 'IN_PROGRESS'}" th:text="${todo.status.getDisplayName()}" class="badge badge-warning"></span>
+                            <span th:if="${todo.status.toString() == 'DONE'}" th:text="${todo.status.getDisplayName()}" class="badge badge-success"></span>
                         </td>
                         <td>
-                            <span th:text="${todo.priority.displayName}" 
-                                  th:class="|badge ${todo.priority.name() == 'HIGH'} ? 'badge-danger' : 
-                                           (${todo.priority.name() == 'MEDIUM'} ? 'badge-warning' : 'badge-secondary')|">
-                                中
-                            </span>
+                            <span th:if="${todo.priority.toString() == 'HIGH'}" th:text="${todo.priority.getDisplayName()}" class="badge badge-danger"></span>
+                            <span th:if="${todo.priority.toString() == 'MEDIUM'}" th:text="${todo.priority.getDisplayName()}" class="badge badge-warning"></span>
+                            <span th:if="${todo.priority.toString() == 'LOW'}" th:text="${todo.priority.getDisplayName()}" class="badge badge-secondary"></span>
                         </td>
                         <td th:text="${todo.dueDate != null} ? ${#temporals.format(todo.dueDate, 'yyyy-MM-dd')} : '-'">2024-01-01</td>
                         <td th:text="${#temporals.format(todo.createdAt, 'yyyy-MM-dd HH:mm')}">2024-01-01 12:00</td>

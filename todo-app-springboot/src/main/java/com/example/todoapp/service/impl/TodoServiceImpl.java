@@ -211,4 +211,11 @@ public class TodoServiceImpl implements TodoService {
         log.info("Batch status update completed for {} todos", todoIds.size());
         return CompletableFuture.completedFuture(null);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public long countByStatus(TodoStatus status) {
+        log.info("Counting todos by status: {}", status);
+        return todoRepository.countByStatus(status);
+    }
 }

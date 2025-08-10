@@ -60,13 +60,13 @@ public class TodoWebController {
         model.addAttribute("todos", todoPage);
         
         // ステータス別の統計情報を追加
-        List<Todo> allTodos = todoService.findByStatus(TodoStatus.TODO);
-        List<Todo> inProgressTodos = todoService.findByStatus(TodoStatus.IN_PROGRESS);
-        List<Todo> doneTodos = todoService.findByStatus(TodoStatus.DONE);
+        long todoCount = todoService.countByStatus(TodoStatus.TODO);
+        long inProgressCount = todoService.countByStatus(TodoStatus.IN_PROGRESS);
+        long doneCount = todoService.countByStatus(TodoStatus.DONE);
         
-        model.addAttribute("todoCount", allTodos.size());
-        model.addAttribute("inProgressCount", inProgressTodos.size());
-        model.addAttribute("doneCount", doneTodos.size());
+        model.addAttribute("todoCount", todoCount);
+        model.addAttribute("inProgressCount", inProgressCount);
+        model.addAttribute("doneCount", doneCount);
         
         log.info("Web: Displaying {} todos in page {} of {}", 
                 todoPage.getNumberOfElements(), 

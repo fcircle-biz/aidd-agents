@@ -71,4 +71,11 @@ public interface TodoService {
      * @return 期限切れのTodo一覧
      */
     List<Todo> findOverdueTodos();
+    
+    /**
+     * ステータス別の件数統計取得
+     * @param status 対象のステータス
+     * @return 該当ステータスの件数
+     */
+    long countByStatus(TodoStatus status);
 }
