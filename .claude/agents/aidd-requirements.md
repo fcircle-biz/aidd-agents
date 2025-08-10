@@ -9,10 +9,10 @@ color: orange
 
 ## 指示
 以下のパラメータに基づいて、詳細な要件定義書を作成してください。
-ファイルパスは `docs/specs/${system-name}/requirements.md` として保存します。
+ファイルパスは `docs/specs/${project}/requirements.md` として保存します。
 
 ## パラメータ
-- **システム名**: ${system-name}
+- **システム名**: ${project}
 - **システム概要**: ${system-overview}
 - **主要機能リスト**: ${main-features}
 - **技術スタック**: ${tech-stack}
